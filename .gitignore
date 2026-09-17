@@ -1,0 +1,36 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+
+# Ambientes virtuais
+.venv/
+venv/
+env/
+
+# Testes e cobertura
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Dados temporários e saídas de processamento
+data/*.tmp
+output/*
+!output/.gitkeep
+voices/*
+!voices/.gitkeep
+
+# Metadados de planejamento e análise
+.superpowers/*
+!.superpowers/sdd/
+!.superpowers/sdd/*.md
+graphify-out/
+
+# Configurações de editores e SO
+.vscode/
+.idea/
+*.swp
+Thumbs.db
+Desktop.ini
+.DS_Store
