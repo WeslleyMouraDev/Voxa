@@ -188,3 +188,16 @@ def test_readme_content():
     assert "7865" in content
     assert "setup.bat" in content
     assert "start.bat" in content
+
+
+def test_batch_crlf_line_endings():
+    """Verify setup.bat and start.bat use strict CRLF (\\r\\n) line endings required by cmd.exe."""
+    for filename in ["setup.bat", "start.bat"]:
+        path = REPO_ROOT / filename
+        assert path.exists()
+        raw_bytes = path.read_bytes()
+        assert b"\r\n" in raw_bytes, f"{filename} must use CRLF (\\r\\n) line endings"
+        # Garante que nao ha LF isolado (sem CR antes)
+        normalized = raw_bytes.replace(b"\r\n", b"")
+        assert b"\n" not in normalized, f"{filename} contains isolated LF newlines which break cmd.exe parsing"
+

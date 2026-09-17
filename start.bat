@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableDelayedExpansion
 chcp 65001 >nul
-title Voxa — Clonagem, Narração e Transcrição PT-BR
+title Voxa - Inicializador do Sistema
 color 0A
 cls
 

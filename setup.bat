@@ -1,7 +1,7 @@
 @echo off
 setlocal EnableDelayedExpansion
 chcp 65001 >nul
-title Voxa — Instalador do Sistema
+title Voxa - Instalador do Sistema
 color 0B
 cls
 
@@ -40,7 +40,7 @@ if %errorlevel% neq 0 goto :erro_venv_ativacao
 echo       Ambiente virtual ativado com sucesso!
 echo.
 
-:: [3/4] Instalando dependências (requirements.txt)
+:: [3/4] Instalando dependencias (requirements.txt)
 echo  [3/4] Instalando dependencias do projeto - requirements.txt...
 echo       Atualizando pip...
 call python -m pip install --upgrade pip --quiet
@@ -50,7 +50,7 @@ if %errorlevel% neq 0 goto :erro_pip
 echo       Dependencias instaladas com sucesso!
 echo.
 
-:: [4/4] Verificando diretórios de dados e saída
+:: [4/4] Verificando diretorios de dados e saida
 echo  [4/4] Verificando diretorios de trabalho...
 if not exist "data" mkdir "data"
 if not exist "voices" mkdir "voices"

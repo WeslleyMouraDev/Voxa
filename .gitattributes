@@ -1,0 +1,4 @@
+# Forçar CRLF para scripts de lote do Windows e LF para scripts Shell
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.sh text eol=lf
