@@ -14,19 +14,49 @@ echo.
 
 cd /d "%~dp0"
 
-:: [1/4] Verificando Python 3.10+
-echo  [1/4] Verificando instalacao do Python 3.10+...
+:: [1/4] Detectando melhor versao do Python compativel com IA
+echo  [1/4] Verificando instalacao do Python compativel com pacotes de IA...
+
+py -3.12 --version >nul 2>&1
+if %errorlevel% equ 0 goto :usar_py312
+
+py -3.11 --version >nul 2>&1
+if %errorlevel% equ 0 goto :usar_py311
+
+py -3.10 --version >nul 2>&1
+if %errorlevel% equ 0 goto :usar_py310
+
 python --version >nul 2>&1
-if %errorlevel% neq 0 goto :erro_python
-echo       Python detectado com sucesso!
+if %errorlevel% equ 0 goto :usar_python
+
+goto :erro_python
+
+:usar_py312
+set "PY_CMD=py -3.12"
+goto :python_encontrado
+
+:usar_py311
+set "PY_CMD=py -3.11"
+goto :python_encontrado
+
+:usar_py310
+set "PY_CMD=py -3.10"
+goto :python_encontrado
+
+:usar_python
+set "PY_CMD=python"
+goto :python_encontrado
+
+:python_encontrado
+echo       Interpretador selecionado com sucesso: !PY_CMD!
 echo.
 
-:: [2/4] Configurando ambiente virtual Python (.venv)
+:: [2/4] Configurando ambiente virtual Python .venv
 echo  [2/4] Configurando ambiente virtual Python .venv...
 if exist ".venv\Scripts\activate.bat" goto :venv_ok
 
 echo       Criando novo ambiente virtual .venv...
-python -m venv .venv
+!PY_CMD! -m venv .venv
 if %errorlevel% neq 0 goto :erro_venv
 echo       Ambiente virtual criado com sucesso!
 goto :ativar_venv
@@ -40,9 +70,9 @@ if %errorlevel% neq 0 goto :erro_venv_ativacao
 echo       Ambiente virtual ativado com sucesso!
 echo.
 
-:: [3/4] Instalando dependencias (requirements.txt)
+:: [3/4] Instalando dependencias - requirements.txt
 echo  [3/4] Instalando dependencias do projeto - requirements.txt...
-echo       Atualizando pip...
+echo       Atualizando pip no ambiente virtual...
 call python -m pip install --upgrade pip --quiet
 echo       Instalando pacotes necessarios - aguarde, isso pode levar alguns minutos...
 call python -m pip install -r requirements.txt
@@ -74,7 +104,7 @@ exit /b 0
 :erro_python
 echo.
 echo  [ERRO] Python nao foi encontrado no sistema ou nao esta no PATH.
-echo  Instale o Python 3.10 ou superior e marque "Add Python to PATH".
+echo  Instale o Python 3.12 ou 3.11 e marque "Add Python to PATH".
 echo.
 pause
 exit /b 1
@@ -82,7 +112,7 @@ exit /b 1
 :erro_venv
 echo.
 echo  [ERRO] Falha ao criar o ambiente virtual .venv.
-echo  Verifique se o modulo venv esta instalado no seu Python.
+echo  Verifique se o modulo venv esta instalado no seu interpretador Python.
 echo.
 pause
 exit /b 1
@@ -97,7 +127,8 @@ exit /b 1
 :erro_pip
 echo.
 echo  [ERRO] Falha ao instalar as dependencias via pip.
-echo  Verifique sua conexao com a internet e tente novamente.
+echo  Dica: Se estiver usando Python 3.14+, use Python 3.12 ou 3.11 para evitar
+echo  necessidade de compiladores C++ - Microsoft Visual C++ Build Tools.
 echo.
 pause
 exit /b 1
