@@ -15,7 +15,8 @@ env/
 htmlcov/
 
 # Dados temporários e saídas de processamento
-data/*.tmp
+data/*
+!data/.gitkeep
 output/*
 !output/.gitkeep
 voices/*
