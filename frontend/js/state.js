@@ -12,6 +12,13 @@ class StateManager {
       history: [],
       activeTask: null,
       isProcessing: false,
+      narrateText: (() => {
+        try {
+          return localStorage.getItem('voxa_narrate_text') || '';
+        } catch (e) {
+          return '';
+        }
+      })(),
     };
     this.listeners = new Set();
   }
@@ -55,6 +62,13 @@ class StateManager {
 
   setProcessing(isProcessing, activeTask = null) {
     this.set({ isProcessing, activeTask });
+  }
+
+  setNarrateText(text) {
+    try {
+      localStorage.setItem('voxa_narrate_text', text);
+    } catch (e) {}
+    this.set({ narrateText: text });
   }
 }
 

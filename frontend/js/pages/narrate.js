@@ -13,6 +13,11 @@ let activeStopListening = null;
 export function renderNarratePage(container) {
   const state = stateManager.get();
   const voices = state.voices || [];
+  const savedText = state.narrateText || '';
+  const escapedText = savedText
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
 
   container.innerHTML = `
     <div class="page-container">
@@ -34,7 +39,7 @@ export function renderNarratePage(container) {
             id="narrate-text"
             class="textarea-custom"
             placeholder="Insira aqui o roteiro ou texto que deseja narrar em PT-BR... Exemplo: 'No coração da floresta amazônica, pesquisadores descobriram uma nova espécie de orquídea luminosa...'"
-          ></textarea>
+          >${escapedText}</textarea>
         </div>
 
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px;">
@@ -167,12 +172,21 @@ function setupNarrateEvents(container) {
   const btnTranscribeOnly = container.querySelector('#btn-transcribe-only');
   const btnNarrateTranscribe = container.querySelector('#btn-narrate-transcribe');
 
-  // Contador de caracteres e palavras
-  textInput.addEventListener('input', () => {
+  // Atualiza contador de caracteres e palavras
+  const updateCounter = () => {
     const text = textInput.value;
     const chars = text.length;
     const words = text.trim() ? text.trim().split(/\s+/).length : 0;
     counter.textContent = `${chars} caracteres • ${words} palavras`;
+  };
+
+  // Inicializa o contador com o texto salvo ou existente
+  updateCounter();
+
+  // Contador de caracteres e palavras + persistência do texto
+  textInput.addEventListener('input', () => {
+    updateCounter();
+    stateManager.setNarrateText(textInput.value);
   });
 
   // Troca de Modo de Transcrição
