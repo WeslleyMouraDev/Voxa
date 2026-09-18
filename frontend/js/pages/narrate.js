@@ -10,10 +10,43 @@ import { showToast } from '../components/toast.js';
 let selectedMode = 'normal';
 let activeStopListening = null;
 
+const VOICE_DEFAULTS = {
+  speed: 1.0,
+  maxPause: 0.3,
+  pitch: 0,
+  presence: 0.5,
+};
+
+function getSavedVoiceSettings() {
+  const parseVal = (key, def, isInt = false) => {
+    try {
+      const v = localStorage.getItem(key);
+      if (v === null || v === '') return def;
+      const parsed = isInt ? parseInt(v, 10) : parseFloat(v);
+      return isNaN(parsed) ? def : parsed;
+    } catch (_) {
+      return def;
+    }
+  };
+
+  const speed = parseVal('voxa_voice_speed', VOICE_DEFAULTS.speed);
+  const maxPause = parseVal('voxa_voice_max_pause', VOICE_DEFAULTS.maxPause);
+  const pitch = parseVal('voxa_voice_pitch', VOICE_DEFAULTS.pitch, true);
+  const presence = parseVal('voxa_voice_presence', VOICE_DEFAULTS.presence);
+
+  let isOpen = false;
+  try {
+    isOpen = localStorage.getItem('voxa_voice_accordion_open') === 'true';
+  } catch (_) {}
+
+  return { speed, maxPause, pitch, presence, isOpen };
+}
+
 export function renderNarratePage(container) {
   const state = stateManager.get();
   const voices = state.voices || [];
   const savedText = state.narrateText || '';
+  const voiceSettings = getSavedVoiceSettings();
   const escapedText = savedText
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
@@ -75,6 +108,84 @@ export function renderNarratePage(container) {
               <span class="form-hint">Opcional</span>
             </label>
             <input type="file" id="audio-upload-input" accept="audio/*,.mp3,.wav,.ogg,.m4a" class="input-text" style="padding: 8px 12px;" />
+          </div>
+        </div>
+
+        <!-- Accordion de Ajustes de Voz & Estilo -->
+        <div class="accordion-card ${voiceSettings.isOpen ? 'open' : ''}" id="voice-controls-accordion">
+          <div class="accordion-header" id="voice-controls-header">
+            <div class="accordion-title">
+              <span class="accordion-icon">🎛️</span>
+              <span class="accordion-label">
+                <strong>Ajustes de Voz & Estilo</strong>
+                <span class="accordion-subtitle">(Ritmo, Pausa, Tom, Presença)</span>
+              </span>
+            </div>
+            <div class="accordion-header-actions">
+              <button type="button" id="btn-reset-voice-controls" class="btn-reset-small" title="Restaurar padrões dos controles de voz">
+                ↺ Resetar
+              </button>
+              <span class="accordion-chevron" id="accordion-chevron">${voiceSettings.isOpen ? '▲' : '▼'}</span>
+            </div>
+          </div>
+          <div class="accordion-body" id="voice-controls-body" style="display: ${voiceSettings.isOpen ? 'block' : 'none'};">
+            <div class="voice-controls-grid">
+              <!-- Ritmo (Velocidade) -->
+              <div class="control-group">
+                <div class="control-header">
+                  <label for="voice-speed" class="control-label">Ritmo (Velocidade)</label>
+                  <span class="control-value" id="val-voice-speed">${voiceSettings.speed.toFixed(2)}x</span>
+                </div>
+                <input type="range" id="voice-speed" class="range-slider" min="0.5" max="2.0" step="0.05" value="${voiceSettings.speed}" />
+                <div class="control-range-hints">
+                  <span>0.5x (Lento)</span>
+                  <span>1.0x (Padrão)</span>
+                  <span>2.0x (Rápido)</span>
+                </div>
+              </div>
+
+              <!-- Pausa Máxima -->
+              <div class="control-group">
+                <div class="control-header">
+                  <label for="voice-max-pause" class="control-label">Pausa Máxima</label>
+                  <span class="control-value" id="val-voice-max-pause">${Math.round(voiceSettings.maxPause * 1000)}ms (${voiceSettings.maxPause.toFixed(2)}s)</span>
+                </div>
+                <input type="range" id="voice-max-pause" class="range-slider" min="0.0" max="2.0" step="0.05" value="${voiceSettings.maxPause}" />
+                <div class="control-range-hints">
+                  <span>0.0s (Sem pausas)</span>
+                  <span>0.3s (Natural)</span>
+                  <span>2.0s (Longas)</span>
+                </div>
+              </div>
+
+              <!-- Tom (Pitch) -->
+              <div class="control-group">
+                <div class="control-header">
+                  <label for="voice-pitch" class="control-label">Tom (Pitch)</label>
+                  <span class="control-value" id="val-voice-pitch">${voiceSettings.pitch > 0 ? '+' : ''}${voiceSettings.pitch} st${voiceSettings.pitch === 0 ? ' (Normal)' : ''}</span>
+                </div>
+                <input type="range" id="voice-pitch" class="range-slider" min="-12" max="12" step="1" value="${voiceSettings.pitch}" />
+                <div class="control-range-hints">
+                  <span>-12 st (Grave)</span>
+                  <span>0 st (Original)</span>
+                  <span>+12 st (Agudo)</span>
+                </div>
+              </div>
+
+              <!-- Presença Vocal -->
+              <div class="control-group">
+                <div class="control-header">
+                  <label for="voice-presence" class="control-label">Presença Vocal</label>
+                  <span class="control-value" id="val-voice-presence">${Math.round(voiceSettings.presence * 100)}%</span>
+                </div>
+                <input type="range" id="voice-presence" class="range-slider" min="0.0" max="1.0" step="0.05" value="${voiceSettings.presence}" />
+                <div class="control-range-hints">
+                  <span>0% (Suave)</span>
+                  <span>50% (Equilibrado)</span>
+                  <span>100% (Marcante)</span>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -198,6 +309,111 @@ function setupNarrateEvents(container) {
     });
   });
 
+  // Accordion de Ajustes de Voz
+  const accordionCard = container.querySelector('#voice-controls-accordion');
+  const accordionHeader = container.querySelector('#voice-controls-header');
+  const accordionBody = container.querySelector('#voice-controls-body');
+  const accordionChevron = container.querySelector('#accordion-chevron');
+  const btnResetVoiceControls = container.querySelector('#btn-reset-voice-controls');
+
+  if (accordionHeader && accordionBody && accordionCard) {
+    accordionHeader.addEventListener('click', (e) => {
+      if (e.target.closest('#btn-reset-voice-controls')) return;
+      const isCurrentlyOpen = accordionCard.classList.contains('open');
+      if (isCurrentlyOpen) {
+        accordionCard.classList.remove('open');
+        accordionBody.style.display = 'none';
+        if (accordionChevron) accordionChevron.textContent = '▼';
+        try { localStorage.setItem('voxa_voice_accordion_open', 'false'); } catch (_) {}
+      } else {
+        accordionCard.classList.add('open');
+        accordionBody.style.display = 'block';
+        if (accordionChevron) accordionChevron.textContent = '▲';
+        try { localStorage.setItem('voxa_voice_accordion_open', 'true'); } catch (_) {}
+      }
+    });
+  }
+
+  // Sliders de Ajuste de Voz
+  const speedSlider = container.querySelector('#voice-speed');
+  const speedVal = container.querySelector('#val-voice-speed');
+  if (speedSlider && speedVal) {
+    speedSlider.addEventListener('input', () => {
+      const val = parseFloat(speedSlider.value);
+      speedVal.textContent = `${val.toFixed(2)}x`;
+      try { localStorage.setItem('voxa_voice_speed', val.toString()); } catch (_) {}
+    });
+  }
+
+  const maxPauseSlider = container.querySelector('#voice-max-pause');
+  const maxPauseVal = container.querySelector('#val-voice-max-pause');
+  if (maxPauseSlider && maxPauseVal) {
+    maxPauseSlider.addEventListener('input', () => {
+      const val = parseFloat(maxPauseSlider.value);
+      maxPauseVal.textContent = `${Math.round(val * 1000)}ms (${val.toFixed(2)}s)`;
+      try { localStorage.setItem('voxa_voice_max_pause', val.toString()); } catch (_) {}
+    });
+  }
+
+  const pitchSlider = container.querySelector('#voice-pitch');
+  const pitchVal = container.querySelector('#val-voice-pitch');
+  if (pitchSlider && pitchVal) {
+    pitchSlider.addEventListener('input', () => {
+      const val = parseInt(pitchSlider.value, 10);
+      pitchVal.textContent = `${val > 0 ? '+' : ''}${val} st${val === 0 ? ' (Normal)' : ''}`;
+      try { localStorage.setItem('voxa_voice_pitch', val.toString()); } catch (_) {}
+    });
+  }
+
+  const presenceSlider = container.querySelector('#voice-presence');
+  const presenceVal = container.querySelector('#val-voice-presence');
+  if (presenceSlider && presenceVal) {
+    presenceSlider.addEventListener('input', () => {
+      const val = parseFloat(presenceSlider.value);
+      presenceVal.textContent = `${Math.round(val * 100)}%`;
+      try { localStorage.setItem('voxa_voice_presence', val.toString()); } catch (_) {}
+    });
+  }
+
+  // Botão Reset dos controles de voz
+  if (btnResetVoiceControls) {
+    btnResetVoiceControls.addEventListener('click', (e) => {
+      e.stopPropagation();
+      if (speedSlider) {
+        speedSlider.value = VOICE_DEFAULTS.speed;
+        speedSlider.dispatchEvent(new Event('input'));
+      }
+      if (maxPauseSlider) {
+        maxPauseSlider.value = VOICE_DEFAULTS.maxPause;
+        maxPauseSlider.dispatchEvent(new Event('input'));
+      }
+      if (pitchSlider) {
+        pitchSlider.value = VOICE_DEFAULTS.pitch;
+        pitchSlider.dispatchEvent(new Event('input'));
+      }
+      if (presenceSlider) {
+        presenceSlider.value = VOICE_DEFAULTS.presence;
+        presenceSlider.dispatchEvent(new Event('input'));
+      }
+      showToast('Ajustes de voz restaurados para o padrão!', 'info');
+    });
+  }
+
+  // Helper para obter os valores atuais dos controles de voz
+  const getVoiceControls = () => {
+    const speed = parseFloat(speedSlider ? speedSlider.value : VOICE_DEFAULTS.speed);
+    const maxPause = parseFloat(maxPauseSlider ? maxPauseSlider.value : VOICE_DEFAULTS.maxPause);
+    const pitch = parseFloat(pitchSlider ? pitchSlider.value : VOICE_DEFAULTS.pitch);
+    const presence = parseFloat(presenceSlider ? presenceSlider.value : VOICE_DEFAULTS.presence);
+
+    return {
+      speed: isNaN(speed) ? VOICE_DEFAULTS.speed : speed,
+      max_pause: isNaN(maxPause) ? VOICE_DEFAULTS.maxPause : maxPause,
+      pitch: isNaN(pitch) ? VOICE_DEFAULTS.pitch : pitch,
+      presence: isNaN(presence) ? VOICE_DEFAULTS.presence : presence,
+    };
+  };
+
   // Apenas Narrar
   btnNarrateOnly.addEventListener('click', async () => {
     const text = textInput.value.trim();
@@ -207,9 +423,10 @@ function setupNarrateEvents(container) {
       return;
     }
     const voiceId = voiceSelect.value || null;
+    const controls = getVoiceControls();
     try {
       setProcessingUI(true, 'Narração em Andamento');
-      const response = await api.startNarration(text, voiceId);
+      const response = await api.startNarration(text, voiceId, controls);
       trackTaskProgress(response.task_id, 'Narração');
     } catch (err) {
       setProcessingUI(false);
@@ -249,9 +466,10 @@ function setupNarrateEvents(container) {
       return;
     }
     const voiceId = voiceSelect.value || null;
+    const controls = getVoiceControls();
     try {
       setProcessingUI(true, 'Narração e Transcrição Sincronizada');
-      const response = await api.startNarrationAndTranscription(text, voiceId, selectedMode);
+      const response = await api.startNarrationAndTranscription(text, voiceId, selectedMode, controls);
       trackTaskProgress(response.task_id, 'Narração + Transcrição');
     } catch (err) {
       setProcessingUI(false);

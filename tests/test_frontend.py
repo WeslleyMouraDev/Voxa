@@ -34,6 +34,7 @@ def test_root_serves_index_html(client):
         "/js/pages/voices.js",
         "/js/pages/history.js",
         "/js/pages/settings.js",
+        "/js/pages/api-docs.js",
         "/js/app.js",
     ],
 )
@@ -86,4 +87,69 @@ def test_app_js_initializes_log_drawer(client):
     js_text = response.text
     assert "log-drawer" in js_text
     assert "initLogDrawer" in js_text
+
+
+def test_index_html_has_api_docs_navigation(client):
+    """Testa se o index.html possui o link para a página #api-docs na sidebar."""
+    response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+    assert "#api-docs" in html
+    assert 'id="nav-api-docs"' in html
+
+
+def test_app_js_registers_api_docs_route(client):
+    """Testa se app.js importa renderApiDocsPage e registra a rota api-docs."""
+    response = client.get("/js/app.js")
+    assert response.status_code == 200
+    js_text = response.text
+    assert "renderApiDocsPage" in js_text
+    assert "api-docs" in js_text
+
+
+def test_api_js_supports_voice_controls(client):
+    """Testa se api.js aceita e repassa o objeto controls em startNarration e startNarrationAndTranscription."""
+    response = client.get("/js/api.js")
+    assert response.status_code == 200
+    js_text = response.text
+    assert "startNarration(text, voiceId = null, controls = {})" in js_text or "controls" in js_text
+    assert "...controls" in js_text
+
+
+def test_narrate_page_has_voice_controls_accordion(client):
+    """Testa se narrate.js implementa o accordion de ajustes de voz com sliders e botão de reset."""
+    response = client.get("/js/pages/narrate.js")
+    assert response.status_code == 200
+    js_text = response.text
+
+    # Verifica elementos do accordion
+    assert "voice-speed" in js_text
+    assert "voice-max-pause" in js_text
+    assert "voice-pitch" in js_text
+    assert "voice-presence" in js_text
+    assert "btn-reset-voice-controls" in js_text or "voice-controls-reset" in js_text or "resetVoiceControls" in js_text
+    assert "voxa_voice_speed" in js_text
+    assert "voxa_voice_max_pause" in js_text
+    assert "voxa_voice_pitch" in js_text
+    assert "voxa_voice_presence" in js_text
+
+
+def test_api_docs_page_content(client):
+    """Testa se a página api-docs.js exporta renderApiDocsPage e inclui documentação de endpoints e curl."""
+    response = client.get("/js/pages/api-docs.js")
+    assert response.status_code == 200
+    js_text = response.text
+
+    assert "renderApiDocsPage" in js_text
+    assert "/api/narrate" in js_text
+    assert "/api/narrate-and-transcribe" in js_text
+    assert "/api/transcribe" in js_text
+    assert "/api/progress" in js_text
+    assert "/api/voices" in js_text
+    assert "/api/history" in js_text
+    assert "/api/logs" in js_text
+    assert "/api/settings" in js_text
+    assert "curl" in js_text.lower()
+    assert "/docs" in js_text
+
 

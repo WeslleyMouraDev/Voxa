@@ -9,6 +9,7 @@ import { renderNarratePage } from './pages/narrate.js';
 import { renderVoicesPage } from './pages/voices.js';
 import { renderHistoryPage } from './pages/history.js';
 import { renderSettingsPage } from './pages/settings.js';
+import { renderApiDocsPage } from './pages/api-docs.js';
 import { initLogDrawer } from './components/log-drawer.js';
 
 const routes = {
@@ -16,6 +17,7 @@ const routes = {
   voices: renderVoicesPage,
   history: renderHistoryPage,
   settings: renderSettingsPage,
+  'api-docs': renderApiDocsPage,
 };
 
 async function init() {

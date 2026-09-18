@@ -94,8 +94,8 @@ export const api = {
   },
 
   // Narração e Transcrição
-  async startNarration(text, voiceId = null) {
-    const payload = { text };
+  async startNarration(text, voiceId = null, controls = {}) {
+    const payload = { text, ...controls };
     if (voiceId) payload.voice_id = voiceId;
     return await request('/narrate', {
       method: 'POST',
@@ -104,8 +104,8 @@ export const api = {
     });
   },
 
-  async startNarrationAndTranscription(text, voiceId = null, mode = 'normal') {
-    const payload = { text, mode };
+  async startNarrationAndTranscription(text, voiceId = null, mode = 'normal', controls = {}) {
+    const payload = { text, mode, ...controls };
     if (voiceId) payload.voice_id = voiceId;
     return await request('/narrate-and-transcribe', {
       method: 'POST',
