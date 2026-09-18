@@ -6,8 +6,30 @@ Adicionar ao Voxa:
 1. **Painel de logs em tempo real** — drawer inferior (estilo DevTools) acessível em qualquer página da SPA
 2. **API REST completa documentada** — todas as funcionalidades da UI com endpoints REST equivalentes e Swagger UI interativo
 3. **Métricas do sistema** — CPU e RAM em tempo real no painel de logs
+4. **Controles avançados de geração de voz** — Ritmo, Pausa máxima, Tom e Presença na UI (painel retrátil/accordion) e na API REST
 
-## Arquitetura
+## Controles de Geração de Voz (Áudio & Expressividade)
+
+### Especificação dos Parâmetros
+
+| Parâmetro | Campo API | Faixa de Valores | Padrão | Descrição Técnica & Efeito no Áudio |
+|---|---|---|---|---|
+| **Ritmo** | `speed` | `0.5x` a `2.0x` (step `0.05x`) | `1.0x` | Velocidade da fala via algoritmo de time-stretching (FFmpeg `atempo`), alterando o andamento sem alterar a afinação. |
+| **Pausa máxima** | `max_pause` | `0.0s` a `2.0s` (step `0.05s`) | `0.3s` | Intervalo de silêncio inserido entre frases e truncamento de pausas residuais excessivas entre blocos de texto sintetizados. |
+| **Tom** | `pitch` | `-12` a `+12` semitons (step `1`) | `0` | Modulação da afinação vocal (mais grave ou mais aguda) preservando a velocidade da fala (`asetrate` + `atempo` no FFmpeg). |
+| **Presença** | `presence` | `0.0` a `1.0` (step `0.05`) | `0.5` | Mapeado diretamente no parâmetro `exaggeration` do modelo Chatterbox (`ChatterboxMultilingualTTS.generate(exaggeration=presence)`) somado a realce sutil de frequências vocais de estúdio (2.5kHz - 4.5kHz). |
+
+### Interface Web — Componente Retrátil (Accordion)
+
+- Posicionado logo abaixo do seletor de voz na página **Narrar**.
+- Título do Accordion: `🎛️ Ajustes de Voz & Estilo (Ritmo, Pausa, Tom, Presença)` com indicador `[Recolher / Expandir]`.
+- Cada controle possui:
+  - Rótulo claro com ícone descritivo.
+  - Indicador numérico em tempo real (ex: `1.0x`, `300ms`, `0 st`, `50%`).
+  - Slider interativo com feedback visual imediato.
+  - Botão de ação rápida `↺ Resetar para o Padrão`.
+- Estado dos sliders persiste na sessão / `localStorage` para conveniência do usuário.
+
 
 ### Captura de Logs — Abordagem Híbrida
 
@@ -89,8 +111,8 @@ Dois mecanismos complementares que alimentam o mesmo ring buffer:
 | GET | `/api/history` | Lista histórico de gerações |
 | DELETE | `/api/history/{id}` | Exclui item do histórico |
 | DELETE | `/api/history` | Limpa todo o histórico |
-| POST | `/api/narrate` | Inicia narração (async, retorna task_id) |
-| POST | `/api/narrate-and-transcribe` | Narração + transcrição (async) |
+| POST | `/api/narrate` | Inicia narração (async, aceita `speed`, `max_pause`, `pitch`, `presence`) |
+| POST | `/api/narrate-and-transcribe` | Narração + transcrição (async, aceita `speed`, `max_pause`, `pitch`, `presence`) |
 | POST | `/api/transcribe` | Transcrição de áudio (async) |
 | GET | `/api/progress/{task_id}` | SSE de progresso da tarefa |
 
@@ -132,10 +154,15 @@ Dois mecanismos complementares que alimentam o mesmo ring buffer:
 
 | Arquivo | Mudança |
 |---------|---------|
-| `backend/main.py` | Registrar routers de logs/system, inicializar log capture no startup |
+| `backend/models/schemas.py` | Adicionar campos `speed`, `max_pause`, `pitch`, `presence` em `NarrationRequestSchema`, `NarrationAndTranscriptionRequestSchema` e `HistoryItemSchema` |
+| `backend/services/tts_service.py` | Suporte a `speed`, `max_pause`, `pitch`, `presence` na geração e filtros FFmpeg (`atempo`, silêncio entre chunks, `exaggeration`) |
+| `backend/routers/narration.py` | Repassar parâmetros de áudio/voz para a task em background e histórico |
+| `backend/main.py` | Registrar routers de logs/system, enriquecer metadata OpenAPI/Swagger e inicializar log capture no startup |
 | `frontend/index.html` | Adicionar container do drawer de logs fora do main-content |
 | `frontend/js/app.js` | Importar log-drawer, adicionar rota #api-docs, inicializar drawer |
-| `frontend/css/style.css` | Estilos do drawer, cores por nível, animações |
+| `frontend/js/pages/narrate.js` | Adicionar accordion de ajustes de voz e estilo (sliders para Ritmo, Pausa, Tom, Presença) |
+| `frontend/js/api.js` | Atualizar chamadas `startNarration` e `startNarrationAndTranscription` para enviar parâmetros de voz |
+| `frontend/css/style.css` | Estilos do drawer, cores por nível, animações e estilo do accordion/sliders de áudio |
 | `requirements.txt` | Adicionar `psutil` |
 
 ## Protocolo WebSocket `/api/ws/logs`
@@ -192,6 +219,8 @@ Dois mecanismos complementares que alimentam o mesmo ring buffer:
 | `tests/test_log_service.py` | Ring buffer, handler, interceptor, broadcast |
 | `tests/test_metrics_service.py` | Coleta CPU/RAM, formato de dados |
 | `tests/test_logs_api.py` | REST GET/DELETE logs, filtros, WebSocket |
+| `tests/test_voice_controls.py` | Schemas com novos campos, geração TTS com modulação de ritmo, pausa, tom e presença |
+
 
 ## Dependências Novas
 
