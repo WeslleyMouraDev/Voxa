@@ -128,6 +128,8 @@ export const api = {
     const sseUrl = `${API_BASE}/progress/${encodeURIComponent(taskId)}`;
     const eventSource = new EventSource(sseUrl);
 
+    let isTerminated = false;
+
     eventSource.onmessage = (event) => {
       try {
         const data = JSON.parse(event.data);
@@ -136,11 +138,13 @@ export const api = {
         }
 
         if (data.status === 'completed') {
+          isTerminated = true;
           eventSource.close();
           if (onComplete) {
             onComplete(data.result);
           }
-        } else if (data.status === 'failed') {
+        } else if (data.status === 'error' || data.status === 'failed') {
+          isTerminated = true;
           eventSource.close();
           if (onError) {
             onError(new Error(data.error || data.message || 'Falha no processamento da tarefa'));
@@ -152,14 +156,21 @@ export const api = {
     };
 
     eventSource.onerror = (err) => {
+      if (isTerminated) {
+        return;
+      }
       console.warn('Conexão SSE encerrada ou com erro:', err);
       eventSource.close();
       if (onError) {
-        onError(err);
+        const message = (err && err.message)
+          ? err.message
+          : (typeof err === 'string' ? err : 'Conexão com o servidor encerrada antes da conclusão');
+        onError(new Error(message));
       }
     };
 
     return () => {
+      isTerminated = true;
       eventSource.close();
     };
   },

@@ -32,18 +32,34 @@ class TTSService:
             return self._model
 
         try:
-            from chatterbox import ChatterboxTTS
-            self._model = ChatterboxTTS()
+            import torch
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+        except Exception:
+            device = "cpu"
+
+        # 1. Tentar ChatterboxMultilingualTTS (suporte oficial PT-BR com language_id='pt')
+        try:
+            from chatterbox import ChatterboxMultilingualTTS
+            self._model = ChatterboxMultilingualTTS.from_pretrained(device=device)
             return self._model
-        except ImportError:
+        except Exception as err_mtl:
+            # 2. Fallback para ChatterboxTTS padrão
             try:
-                import chatterbox_tts  # type: ignore
-                self._model = chatterbox_tts.ChatterboxTTS()
+                from chatterbox import ChatterboxTTS
+                self._model = ChatterboxTTS.from_pretrained(device=device)
                 return self._model
-            except ImportError:
+            except Exception as err_std:
+                try:
+                    import chatterbox_tts  # type: ignore
+                    if hasattr(chatterbox_tts, "ChatterboxTTS"):
+                        self._model = chatterbox_tts.ChatterboxTTS.from_pretrained(device=device)
+                        return self._model
+                except Exception:
+                    pass
+
                 raise RuntimeError(
-                    "Chatterbox TTS não está instalado no ambiente. "
-                    "Instale 'chatterbox-tts' ou forneça uma instância do modelo para o TTSService."
+                    f"Não foi possível carregar o Chatterbox TTS ({err_mtl}; {err_std}). "
+                    "Verifique se o pacote 'chatterbox-tts' está instalado e se as dependências estão corretas."
                 )
 
     @staticmethod
@@ -150,19 +166,43 @@ class TTSService:
         voice_str = str(Path(voice_sample_path).resolve())
 
         audio_chunks: list[np.ndarray] = []
-        sample_rate = getattr(model, "sample_rate", 24000)
+        sample_rate = getattr(model, "sr", getattr(model, "sample_rate", 24000))
+
+        # Inspeciona parâmetros aceitos por generate (ex: language_id='pt' para ChatterboxMultilingualTTS)
+        gen_method = getattr(model, "generate", None)
+        has_kwargs = False
+        sig_params = set()
+        if callable(gen_method):
+            try:
+                import inspect
+                sig = inspect.signature(gen_method)
+                sig_params = set(sig.parameters.keys())
+                has_kwargs = any(
+                    p.kind == inspect.Parameter.VAR_KEYWORD
+                    for p in sig.parameters.values()
+                )
+            except Exception:
+                has_kwargs = True
 
         # 2. Processar cada chunk
         total_chunks = len(chunks)
         for idx, chunk in enumerate(chunks):
-            if hasattr(model, "generate"):
-                out = model.generate(chunk, audio_prompt_path=voice_str)
-            elif hasattr(model, "synthesize"):
-                out = model.synthesize(chunk, audio_prompt_path=voice_str)
-            elif callable(model):
-                out = model(chunk, audio_prompt_path=voice_str)
-            else:
-                raise RuntimeError("Modelo TTS fornecido não possui método de geração suportado.")
+            try:
+                if gen_method and callable(gen_method):
+                    kwargs: dict[str, Any] = {}
+                    if "language_id" in sig_params:
+                        kwargs["language_id"] = "pt"
+                    if "audio_prompt_path" in sig_params or has_kwargs:
+                        kwargs["audio_prompt_path"] = voice_str
+                    out = gen_method(chunk, **kwargs)
+                elif hasattr(model, "synthesize"):
+                    out = model.synthesize(chunk, audio_prompt_path=voice_str)
+                elif callable(model):
+                    out = model(chunk, audio_prompt_path=voice_str)
+                else:
+                    raise RuntimeError("Modelo TTS fornecido não possui método de geração suportado.")
+            except Exception as e:
+                raise RuntimeError(f"Erro ao sintetizar bloco {idx + 1}/{total_chunks}: {e}") from e
 
             # Converte saída para numpy array 1D
             arr = self._to_numpy_audio(out)

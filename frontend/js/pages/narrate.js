@@ -300,7 +300,8 @@ function trackTaskProgress(taskId, taskLabel) {
     // onError
     (err) => {
       setProcessingUI(false);
-      showToast(`Falha no processamento: ${err.message}`, 'error');
+      const msg = (err && err.message) ? err.message : (typeof err === 'string' ? err : 'Falha desconhecida no servidor');
+      showToast(`Falha no processamento: ${msg}`, 'error');
     }
   );
 }
