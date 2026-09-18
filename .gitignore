@@ -26,7 +26,7 @@ voices/*
 .superpowers/*
 !.superpowers/sdd/
 !.superpowers/sdd/*.md
-graphify-out/
+graphify-out/cache/
 
 # Configurações de editores e SO
 .vscode/

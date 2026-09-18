@@ -1,0 +1,482 @@
+{
+  "D:\\Projetos\\Voxa\\setup.sh": {
+    "mtime": 1789682420.6174192,
+    "ast_hash": "96a9dd122729f0b107798af1ec2f43b1",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\start.sh": {
+    "mtime": 1789682423.835017,
+    "ast_hash": "3690949a6ef56cdbdcde88756410465d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\config.py": {
+    "mtime": 1789681400.5884109,
+    "ast_hash": "0783da53bf778c32112f76ddb297c4a4",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\main.py": {
+    "mtime": 1789746828.3788598,
+    "ast_hash": "c8434831d0dc597da97e23b785c64ca4",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\__init__.py": {
+    "mtime": 1789681389.4009852,
+    "ast_hash": "4729f8ed0a248f6074d5218c374d1205",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\models\\enums.py": {
+    "mtime": 1789681391.3085566,
+    "ast_hash": "c296419e98f75f68d5f67aeaa84e36c3",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\models\\schemas.py": {
+    "mtime": 1789745942.9467137,
+    "ast_hash": "5ba334d5c56d751909c64897c720419a",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\models\\__init__.py": {
+    "mtime": 1789681397.9466643,
+    "ast_hash": "a9be3b6de5553c82ede6650101e81305",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\history.py": {
+    "mtime": 1789681999.621655,
+    "ast_hash": "874c96f33a629be30bde20b17ff333a2",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\logs.py": {
+    "mtime": 1789746796.8115792,
+    "ast_hash": "02e7aa12c7be3ee682861246570fb45d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\narration.py": {
+    "mtime": 1789746886.854115,
+    "ast_hash": "d583ac06a18817da993e857dda987d8f",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\progress.py": {
+    "mtime": 1789682022.517294,
+    "ast_hash": "245d2a1b410bd4d676da34ee241e54f8",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\settings.py": {
+    "mtime": 1789681991.1395583,
+    "ast_hash": "3c69dc0d4826d6e07d2e68f8827f3bc6",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\system.py": {
+    "mtime": 1789746800.4215965,
+    "ast_hash": "93fce2e4dfede783b8c7f16372e1c70e",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\transcription.py": {
+    "mtime": 1789682058.710053,
+    "ast_hash": "c0c3a0042c9ee692e242297800747261",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\voices.py": {
+    "mtime": 1789681996.0596168,
+    "ast_hash": "6c50942d51156f51d131fbab6a197c62",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\routers\\__init__.py": {
+    "mtime": 1789681988.6541524,
+    "ast_hash": "9a40810777e370e0677a84d010a0562f",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\cpu_limiter.py": {
+    "mtime": 1789681520.7557833,
+    "ast_hash": "5a463963c895058b6d3164b132f40ae4",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\log_service.py": {
+    "mtime": 1789746238.7452896,
+    "ast_hash": "7b97e7ec65a62f6f82553f5cb54347ca",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\metrics_service.py": {
+    "mtime": 1789746242.316171,
+    "ast_hash": "3389553d1b8036c0cc9f680cad76aeea",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\srt_builder.py": {
+    "mtime": 1789681656.0582576,
+    "ast_hash": "c0d815a85e2f9ec7db31b920364acf12",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\stt_service.py": {
+    "mtime": 1789681828.3072512,
+    "ast_hash": "b8b197b13e672476d4b573f965282f7e",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\task_manager.py": {
+    "mtime": 1789681534.4831605,
+    "ast_hash": "02ece72adef70885ddb5bb67fce18409",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\tts_service.py": {
+    "mtime": 1789746532.358168,
+    "ast_hash": "49d92ea4bd6c162801e6b2d72b37408b",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\services\\__init__.py": {
+    "mtime": 1789681833.3541875,
+    "ast_hash": "b56ab61c32c0f452519b74a15fcc475d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\storage\\history_store.py": {
+    "mtime": 1789681417.4930234,
+    "ast_hash": "befa762e1c1cba418ebb82bf2739f3e5",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\storage\\json_store.py": {
+    "mtime": 1789681403.9384408,
+    "ast_hash": "140e753dd72325e939cd336fce93f010",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\storage\\settings_store.py": {
+    "mtime": 1789681407.7208498,
+    "ast_hash": "876c2b275b2f8375fe52165eccfc9601",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\storage\\voice_store.py": {
+    "mtime": 1789681413.327562,
+    "ast_hash": "1135aab7666388705cdd081feb75815b",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\backend\\storage\\__init__.py": {
+    "mtime": 1789681420.455816,
+    "ast_hash": "ad2843d02696c74948518bce03653549",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\data\\history.json": {
+    "mtime": 1789744704.7164805,
+    "ast_hash": "506ea31c5fd0ec149365cc92eef1f27a",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\data\\settings.json": {
+    "mtime": 1789690550.907196,
+    "ast_hash": "e895436014469bb1a923183a8b686d98",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\data\\voices.json": {
+    "mtime": 1789744092.2528305,
+    "ast_hash": "dd6753c9e89106d909d5edc40192f2a4",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\api.js": {
+    "mtime": 1789747576.560444,
+    "ast_hash": "9cac3e7fe077f540ae7cfd0e746fe692",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\app.js": {
+    "mtime": 1789747670.5378375,
+    "ast_hash": "f7c92f05abe773a00c017da930c18c60",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\state.js": {
+    "mtime": 1789691985.5909529,
+    "ast_hash": "cb462a51168316f793bb3d019a5a5682",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\components\\log-drawer.js": {
+    "mtime": 1789747206.334699,
+    "ast_hash": "a62cc12680fa46ba224a88a6b32cbe80",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\components\\modal.js": {
+    "mtime": 1789682233.5516956,
+    "ast_hash": "5b7782a1c1a3c5972165cf5a5473ec55",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\components\\toast.js": {
+    "mtime": 1789682229.1445336,
+    "ast_hash": "13ea3b1802e1e9c42dfaf88f3d345fd6",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\pages\\api-docs.js": {
+    "mtime": 1789747661.5952227,
+    "ast_hash": "0884d5b6cf872cf4a90818d18dcac52d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\pages\\history.js": {
+    "mtime": 1789682259.3034952,
+    "ast_hash": "f2cfcc027a37a82032b2426d3ae4547a",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\pages\\narrate.js": {
+    "mtime": 1789747629.251139,
+    "ast_hash": "3c8be0a1c748b9c3cc4ae897f0307eab",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\pages\\settings.js": {
+    "mtime": 1789682268.1454282,
+    "ast_hash": "72e26b2908fc19fb20089a10c67b2a9d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\js\\pages\\voices.js": {
+    "mtime": 1789682253.1731472,
+    "ast_hash": "49c652cea3369bfd17dba950bfaa161d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_api.py": {
+    "mtime": 1789682066.1733217,
+    "ast_hash": "ee67c01dbe8af8a8b67bd4caa348d8c1",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_cpu_limiter.py": {
+    "mtime": 1789681501.6158843,
+    "ast_hash": "dc750e410368231436a9ab74ac0f1e4e",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_frontend.py": {
+    "mtime": 1789747553.7023244,
+    "ast_hash": "f6b2cd645c70a6e07c6bb21b9bf789d9",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_launchers.py": {
+    "mtime": 1789686754.0161579,
+    "ast_hash": "e31fc561cfdb131964920f7973356c1d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_logs_api.py": {
+    "mtime": 1789746770.8353572,
+    "ast_hash": "5fd05e987e1958d9a1bd160de6ab3b0a",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_log_service.py": {
+    "mtime": 1789746219.0309713,
+    "ast_hash": "58eb5274e77b571b5f4a96ae60629d7f",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_metrics_service.py": {
+    "mtime": 1789746222.4547403,
+    "ast_hash": "a6da436a5605b371140056007c7d301f",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_schemas_controls.py": {
+    "mtime": 1789745932.212545,
+    "ast_hash": "9143d4043507f76c3c733cd248e2f0b6",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_services.py": {
+    "mtime": 1789681803.3628955,
+    "ast_hash": "bce8dd250f5801e6e60be5f1d4089cde",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_srt_builder.py": {
+    "mtime": 1789681649.4070992,
+    "ast_hash": "fbeddb13b28a937fce04662cbafa4f0b",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_storage.py": {
+    "mtime": 1789681377.5780106,
+    "ast_hash": "09e44a64f5cc9b81f001bc0f95ceae47",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_task_manager.py": {
+    "mtime": 1789681507.109061,
+    "ast_hash": "bce6507d1e23abe427ec79af0e28db07",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\test_voice_controls.py": {
+    "mtime": 1789746509.0006797,
+    "ast_hash": "d9422249830b605ef2b1da16c4a1445e",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\tests\\__init__.py": {
+    "mtime": 1789681368.8140197,
+    "ast_hash": "1231da8d7776e548364d6637aa9b260a",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\README.md": {
+    "mtime": 1789748059.6285825,
+    "ast_hash": "bbc2752f0ecaaecbe8ccc5e6e58de2cd",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\requirements.txt": {
+    "mtime": 1789691708.0325124,
+    "ast_hash": "21183f8f7667730dfa96162b1d8e0b36",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.agents\\rules\\graphify.md": {
+    "mtime": 1789679399.542036,
+    "ast_hash": "56d322bc02e948acf8a5abc7fd5d20ff",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.agents\\workflows\\graphify.md": {
+    "mtime": 1789679399.5429726,
+    "ast_hash": "84de69efd46ab0b8430393bd4188f8f2",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\progress.md": {
+    "mtime": 1789747904.7126825,
+    "ast_hash": "965e2358915490cdfa53b5b971a0b4cc",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-1-brief.md": {
+    "mtime": 1789745897.9796033,
+    "ast_hash": "32dedda2e826a5688c34129a0d4f54f0",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-1-report.md": {
+    "mtime": 1789745991.5737145,
+    "ast_hash": "cd9867c6a2aaaa7b9266a5a59aaf138e",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-1-review-package.txt": {
+    "mtime": 1789746000.5298612,
+    "ast_hash": "95530bd14444c0ace3b8c0f5cdaaeda6",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-2-brief.md": {
+    "mtime": 1789746100.413305,
+    "ast_hash": "d5f906ebc75139d6bd6c63146bc908eb",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-2-report.md": {
+    "mtime": 1789746311.9555767,
+    "ast_hash": "46fb929b79b14d134a81f2988490a8dc",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-2-review-package-utf8.txt": {
+    "mtime": 1789746340.7165713,
+    "ast_hash": "de80f7a7167df81084ee3ab336d9a175",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-2-review-package.txt": {
+    "mtime": 1789746319.810235,
+    "ast_hash": "2f9190156508d92737ae2c77b361f089",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-3-brief.md": {
+    "mtime": 1789746395.485772,
+    "ast_hash": "1a2d6d1436eb152ef0c19d98ffbc0412",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-3-report.md": {
+    "mtime": 1789746595.038881,
+    "ast_hash": "1b385d376f4000bc0c52a1630f9b1622",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-3-review-package.txt": {
+    "mtime": 1789746604.5776434,
+    "ast_hash": "7410f7d23300a7c9787e888a8aad2f5d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-4-brief.md": {
+    "mtime": 1789746667.7767696,
+    "ast_hash": "9de9516c4bc230b05c66f24c1fe672e9",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-4-report.md": {
+    "mtime": 1789746960.6956172,
+    "ast_hash": "96c72f941517f41ed2620cdedc97ea48",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-4-review-package-utf8.txt": {
+    "mtime": 1789746991.1187444,
+    "ast_hash": "5ca3709d3fff14a82e5fb08e90717ccf",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-4-review-package.txt": {
+    "mtime": 1789746971.7774644,
+    "ast_hash": "21fa4f406ed64d5d17b8a1e2711e30b6",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-5-brief.md": {
+    "mtime": 1789747082.5950458,
+    "ast_hash": "7dc2edbe8b428ace261ae76bdcba2129",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-5-report.md": {
+    "mtime": 1789747272.8501756,
+    "ast_hash": "aedee1230fc39778e3c99093ce7966ed",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-5-review-package.txt": {
+    "mtime": 1789747294.2012587,
+    "ast_hash": "c4c4be4b344de1cbf8915b4397da9160",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-6-brief.md": {
+    "mtime": 1789747474.693372,
+    "ast_hash": "2e8657427991bfae9564838a59fa29ae",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-6-report.md": {
+    "mtime": 1789747774.0897515,
+    "ast_hash": "4715d2826400191973a3508d9f2e3f7b",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-6-review-package-utf8.txt": {
+    "mtime": 1789747809.513649,
+    "ast_hash": "0d449470fc91ae0df64b21e848710993",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-6-review-package.txt": {
+    "mtime": 1789747788.5649886,
+    "ast_hash": "f156e65fbae62328e870d4405a55481a",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-7-brief.md": {
+    "mtime": 1789747911.3739817,
+    "ast_hash": "1b89b1bf6557aa7300f37542a90631bf",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\.superpowers\\sdd\\task-7-report.md": {
+    "mtime": 1789682444.051761,
+    "ast_hash": "f2c814e0f8230c61eb4f101bf21fe5e8",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\docs\\superpowers\\plans\\2026-09-17-voxa-implementation-plan.md": {
+    "mtime": 1789681312.4172962,
+    "ast_hash": "73c8ec2c21c854064094266079d4a4c7",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\docs\\superpowers\\plans\\2026-09-18-logs-panel-voice-controls-api.md": {
+    "mtime": 1789745786.7804031,
+    "ast_hash": "8669307eb1bee3cb835ea001850ac7f8",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\docs\\superpowers\\specs\\2026-09-17-voxa-design.md": {
+    "mtime": 1789681292.5041049,
+    "ast_hash": "8dff27e9187f40e8970c1f23d4f31226",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\docs\\superpowers\\specs\\2026-09-18-logs-panel-api-design.md": {
+    "mtime": 1789745708.6143627,
+    "ast_hash": "7f199bf2c4ffcfc1651f3b4db5e9ba06",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\index.html": {
+    "mtime": 1789747675.5966918,
+    "ast_hash": "685af63d1a6247361b87533e268d2e86",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\docs\\assets\\banner.png": {
+    "mtime": 1789688047.7875922,
+    "ast_hash": "4c2685f1dcd2777c2ceedde0088cd9fa",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\frontend\\assets\\logo.svg": {
+    "mtime": 1789682198.8265164,
+    "ast_hash": "37309664ad36ff3e68e9bbd5a1fe610d",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\output\\27d53adc-9bde-4826-b014-f3afa7191fd1.mp3": {
+    "mtime": 1789744652.3278449,
+    "ast_hash": "1d2d0d7acb74d58b940a79f1476aaf27",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\output\\460c14f7-c6c7-4d9a-8a8d-8484d8fb8f64.mp3": {
+    "mtime": 1789742399.3519711,
+    "ast_hash": "c49bfb471b1fc887e9af06f071062d64",
+    "semantic_hash": ""
+  },
+  "D:\\Projetos\\Voxa\\voices\\df04b187-4170-4386-bdd7-498c149354ff_modelo de voz.mp3": {
+    "mtime": 1789744092.2518225,
+    "ast_hash": "f5a7a63e17142ff488942b67f8f874b2",
+    "semantic_hash": ""
+  }
+}
