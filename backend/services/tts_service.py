@@ -26,6 +26,90 @@ class TTSService:
         self.cpu_limiter = cpu_limiter
         self._model = model
 
+    @staticmethod
+    def _load_pt_br_model(device: str) -> Any:
+        """
+        Carrega o modelo oficial Chatterbox V3 PT-BR (ResembleAI/Chatterbox-Multilingual-pt-br)
+        otimizado exclusivamente para português brasileiro (pt-BR).
+        """
+        from huggingface_hub import hf_hub_download, snapshot_download
+        import torch
+        from safetensors.torch import load_file as load_safetensors
+        from chatterbox.models.t3 import T3
+        from chatterbox.models.t3.modules.t3_config import T3Config
+        from chatterbox.models.s3gen import S3Gen
+        from chatterbox.models.tokenizers import MTLTokenizer
+        from chatterbox.models.voice_encoder import VoiceEncoder
+        from chatterbox.tts import Conditionals
+        from chatterbox import ChatterboxMultilingualTTS
+
+        token = os.getenv("HF_TOKEN")
+        map_location = torch.device('cpu') if device in ("cpu", "mps") else None
+
+        # 1. Ativos de base (ve.pt, conds.pt)
+        base_dir = Path(
+            snapshot_download(
+                repo_id="ResembleAI/chatterbox",
+                repo_type="model",
+                revision="main",
+                allow_patterns=["ve.pt", "conds.pt"],
+                token=token,
+            )
+        )
+
+        # 2. Ativos dedicados do Single Language Pack PT-BR (ResembleAI/Chatterbox-Multilingual-pt-br)
+        t3_path = Path(hf_hub_download(
+            repo_id="ResembleAI/Chatterbox-Multilingual-pt-br",
+            filename="t3_pt_br.safetensors",
+            repo_type="model",
+            token=token,
+        ))
+        s3gen_path = Path(hf_hub_download(
+            repo_id="ResembleAI/Chatterbox-Multilingual-pt-br",
+            filename="s3gen_v3.safetensors",
+            repo_type="model",
+            token=token,
+        ))
+        tok_path = Path(hf_hub_download(
+            repo_id="ResembleAI/Chatterbox-Multilingual-pt-br",
+            filename="grapheme_mtl_merged_expanded_v1.json",
+            repo_type="model",
+            token=token,
+        ))
+
+        # 3. Voice Encoder
+        ve = VoiceEncoder()
+        ve.load_state_dict(
+            torch.load(base_dir / "ve.pt", map_location=map_location, weights_only=True)
+        )
+        ve.to(device).eval()
+
+        # 4. T3 PT-BR Model
+        t3_cfg = T3Config.multilingual()
+        t3_cfg.text_tokens_dict_size = 2454
+        t3 = T3(t3_cfg)
+        t3_state = load_safetensors(str(t3_path))
+        if "model" in t3_state.keys():
+            t3_state = t3_state["model"][0]
+        t3.load_state_dict(t3_state)
+        t3.to(device).eval()
+
+        # 5. S3Gen V3 Decoder
+        s3gen = S3Gen()
+        s3gen.load_state_dict(
+            load_safetensors(str(s3gen_path)),
+            strict=False,
+        )
+        s3gen.to(device).eval()
+
+        # 6. Tokenizador e Condicionais
+        tokenizer = MTLTokenizer(str(tok_path))
+        conds = None
+        if (conds_file := base_dir / "conds.pt").exists():
+            conds = Conditionals.load(conds_file, map_location=map_location).to(device)
+
+        return ChatterboxMultilingualTTS(t3, s3gen, ve, tokenizer, device, conds=conds)
+
     def _get_model(self) -> Any:
         """Carrega sob demanda o modelo ChatterboxTTS se ainda não instanciado."""
         if self._model is not None:
@@ -37,30 +121,35 @@ class TTSService:
         except Exception:
             device = "cpu"
 
-        # 1. Tentar ChatterboxMultilingualTTS (suporte oficial PT-BR com language_id='pt')
+        # 1. Prioridade máxima: Chatterbox V3 PT-BR (Single Language Pack dedicado pt-br)
         try:
-            from chatterbox import ChatterboxMultilingualTTS
-            self._model = ChatterboxMultilingualTTS.from_pretrained(device=device)
+            self._model = self._load_pt_br_model(device)
             return self._model
-        except Exception as err_mtl:
-            # 2. Fallback para ChatterboxTTS padrão
+        except Exception as err_pt_br:
+            # 2. Fallback para ChatterboxMultilingualTTS genérico
             try:
-                from chatterbox import ChatterboxTTS
-                self._model = ChatterboxTTS.from_pretrained(device=device)
+                from chatterbox import ChatterboxMultilingualTTS
+                self._model = ChatterboxMultilingualTTS.from_pretrained(device=device)
                 return self._model
-            except Exception as err_std:
+            except Exception as err_mtl:
+                # 3. Fallback para ChatterboxTTS padrão
                 try:
-                    import chatterbox_tts  # type: ignore
-                    if hasattr(chatterbox_tts, "ChatterboxTTS"):
-                        self._model = chatterbox_tts.ChatterboxTTS.from_pretrained(device=device)
-                        return self._model
-                except Exception:
-                    pass
+                    from chatterbox import ChatterboxTTS
+                    self._model = ChatterboxTTS.from_pretrained(device=device)
+                    return self._model
+                except Exception as err_std:
+                    try:
+                        import chatterbox_tts  # type: ignore
+                        if hasattr(chatterbox_tts, "ChatterboxTTS"):
+                            self._model = chatterbox_tts.ChatterboxTTS.from_pretrained(device=device)
+                            return self._model
+                    except Exception:
+                        pass
 
-                raise RuntimeError(
-                    f"Não foi possível carregar o Chatterbox TTS ({err_mtl}; {err_std}). "
-                    "Verifique se o pacote 'chatterbox-tts' está instalado e se as dependências estão corretas."
-                )
+                    raise RuntimeError(
+                        f"Não foi possível carregar o Chatterbox TTS PT-BR ({err_pt_br}; {err_mtl}; {err_std}). "
+                        "Verifique se o pacote 'chatterbox-tts' está instalado e se as dependências estão corretas."
+                    )
 
     @staticmethod
     def split_text_into_chunks(text: str, max_chars: int = 250) -> list[str]:
@@ -190,7 +279,7 @@ class TTSService:
             try:
                 if gen_method and callable(gen_method):
                     kwargs: dict[str, Any] = {}
-                    if "language_id" in sig_params:
+                    if "language_id" in sig_params or has_kwargs:
                         kwargs["language_id"] = "pt"
                     if "audio_prompt_path" in sig_params or has_kwargs:
                         kwargs["audio_prompt_path"] = voice_str
