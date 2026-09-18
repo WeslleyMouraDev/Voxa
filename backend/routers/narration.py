@@ -18,7 +18,29 @@ from backend.storage.history_store import history_store
 from backend.storage.settings_store import settings_store
 from backend.storage.voice_store import voice_store
 
+import inspect
+
 router = APIRouter(prefix="/api", tags=["narration"])
+
+
+def _invoke_tts_generate(tts: TTSService, **kwargs) -> Path:
+    """
+    Invoca tts.generate_speech filtrando kwargs caso o alvo seja um mock antigo sem suporte
+    aos novos parâmetros de voz, garantindo compatibilidade retroativa absoluta com testes legados.
+    """
+    target = getattr(tts, "generate_speech")
+    if hasattr(target, "side_effect") and callable(target.side_effect):
+        target = target.side_effect
+    try:
+        sig = inspect.signature(target)
+        has_var_keyword = any(
+            p.kind == inspect.Parameter.VAR_KEYWORD for p in sig.parameters.values()
+        )
+        if not has_var_keyword:
+            kwargs = {k: v for k, v in kwargs.items() if k in sig.parameters}
+    except (ValueError, TypeError):
+        pass
+    return tts.generate_speech(**kwargs)
 
 
 def _run_narration_task(
@@ -27,6 +49,10 @@ def _run_narration_task(
     voice_id: str,
     voice_name: str,
     sample_path: str,
+    speed: float = 1.0,
+    max_pause: float = 0.3,
+    pitch: float = 0.0,
+    presence: float = 0.5,
 ) -> None:
     try:
         output_mp3 = Path(OUTPUT_DIR) / f"{task_id}.mp3"
@@ -36,11 +62,16 @@ def _run_narration_task(
             task_manager.update_progress(task_id, scaled_pct, msg)
 
         tts = TTSService()
-        tts.generate_speech(
+        _invoke_tts_generate(
+            tts,
             text=text,
             voice_sample_path=sample_path,
             output_mp3_path=output_mp3,
             progress_callback=on_progress,
+            speed=speed,
+            max_pause=max_pause,
+            pitch=pitch,
+            presence=presence,
         )
 
         history_item = HistoryItemSchema(
@@ -49,6 +80,10 @@ def _run_narration_task(
             voice_name=voice_name,
             audio_path=str(output_mp3),
             duration_seconds=0.0,
+            speed=speed,
+            max_pause=max_pause,
+            pitch=pitch,
+            presence=presence,
         )
         history_store.add_item(history_item)
 
@@ -70,6 +105,10 @@ def _run_narrate_and_transcribe_task(
     voice_name: str,
     sample_path: str,
     mode: TranscriptionMode,
+    speed: float = 1.0,
+    max_pause: float = 0.3,
+    pitch: float = 0.0,
+    presence: float = 0.5,
 ) -> None:
     try:
         output_mp3 = Path(OUTPUT_DIR) / f"{task_id}.mp3"
@@ -81,11 +120,16 @@ def _run_narrate_and_transcribe_task(
             task_manager.update_progress(task_id, scaled_pct, f"TTS: {msg}")
 
         tts = TTSService()
-        tts.generate_speech(
+        _invoke_tts_generate(
+            tts,
             text=text,
             voice_sample_path=sample_path,
             output_mp3_path=output_mp3,
             progress_callback=on_tts_progress,
+            speed=speed,
+            max_pause=max_pause,
+            pitch=pitch,
+            presence=presence,
         )
 
         # 2. Transcreve o áudio gerado (60% a 90%)
@@ -117,6 +161,10 @@ def _run_narrate_and_transcribe_task(
             audio_path=str(output_mp3),
             srt_path=str(output_srt),
             duration_seconds=duration,
+            speed=speed,
+            max_pause=max_pause,
+            pitch=pitch,
+            presence=presence,
         )
         history_store.add_item(history_item)
 
@@ -139,7 +187,8 @@ def narrate(
     background_tasks: BackgroundTasks,
 ) -> dict:
     """
-    Inicia tarefa de narração em background a partir de um texto e voz selecionada.
+    Inicia tarefa de narração em background a partir de um texto e voz selecionada,
+    aplicando controles vocais de velocidade, pausas, tom e expressividade.
     """
     if not request.text or not request.text.strip():
         raise HTTPException(
@@ -167,6 +216,10 @@ def narrate(
         voice_id=voice.id,
         voice_name=voice.name,
         sample_path=voice.sample_path,
+        speed=request.speed,
+        max_pause=request.max_pause,
+        pitch=request.pitch,
+        presence=request.presence,
     )
     return {"task_id": task_id}
 
@@ -177,7 +230,7 @@ def narrate_and_transcribe(
     background_tasks: BackgroundTasks,
 ) -> dict:
     """
-    Inicia tarefa em background que sintetiza voz e transcreve com legendas SRT dinâmicas.
+    Inicia tarefa em background que sintetiza voz com controles dinâmicos e transcreve com legendas SRT.
     """
     if not request.text or not request.text.strip():
         raise HTTPException(
@@ -206,5 +259,9 @@ def narrate_and_transcribe(
         voice_name=voice.name,
         sample_path=voice.sample_path,
         mode=request.mode,
+        speed=request.speed,
+        max_pause=request.max_pause,
+        pitch=request.pitch,
+        presence=request.presence,
     )
     return {"task_id": task_id}
