@@ -212,13 +212,17 @@ class TTSService:
         voice_sample_path: str | Path,
         output_mp3_path: str | Path,
         progress_callback: Optional[Callable[[float, str], None]] = None,
+        speed: float = 1.0,
+        max_pause: float = 0.3,
+        pitch: float = 0.0,
+        presence: float = 0.5,
     ) -> Path:
         """
         Gera narração clonando a voz informada:
         1. Aplica limites de recursos via CPULimiter.
         2. Divide o texto em blocos/chunks.
-        3. Sintetiza áudio de cada bloco reportando progresso.
-        4. Concatena os áudios e exporta para MP3.
+        3. Sintetiza áudio de cada bloco reportando progresso e aplicando presence (exaggeration).
+        4. Concatena os áudios intercalando pausas (max_pause) e exporta para MP3 com speed e pitch.
         """
         # 1. Aplicar limites de CPU
         if self.cpu_limiter is not None:
@@ -263,6 +267,8 @@ class TTSService:
                         kwargs["language_id"] = "pt"
                     if "audio_prompt_path" in sig_params or has_kwargs:
                         kwargs["audio_prompt_path"] = voice_str
+                    if "exaggeration" in sig_params or has_kwargs:
+                        kwargs["exaggeration"] = float(presence)
                     out = gen_method(chunk, **kwargs)
                 elif hasattr(model, "synthesize"):
                     out = model.synthesize(chunk, audio_prompt_path=voice_str)
@@ -287,13 +293,28 @@ class TTSService:
         if progress_callback:
             progress_callback(88.0, "Concatenando áudios e convertendo para MP3...")
 
-        # 3. Concatenar áudio
-        combined_audio = np.concatenate(audio_chunks) if len(audio_chunks) > 1 else audio_chunks[0]
+        # 3. Concatenar áudio intercalando pausas (max_pause)
+        if len(audio_chunks) > 1 and max_pause > 0:
+            pause_samples = int(sample_rate * max_pause)
+            if pause_samples > 0:
+                silence_array = np.zeros(pause_samples, dtype=np.float32)
+                interleaved_chunks: list[np.ndarray] = []
+                for i, chunk_arr in enumerate(audio_chunks):
+                    if i > 0:
+                        interleaved_chunks.append(silence_array)
+                    interleaved_chunks.append(chunk_arr)
+                combined_audio = np.concatenate(interleaved_chunks)
+            else:
+                combined_audio = np.concatenate(audio_chunks)
+        elif len(audio_chunks) > 1:
+            combined_audio = np.concatenate(audio_chunks)
+        else:
+            combined_audio = audio_chunks[0]
 
-        # 4. Salvar como MP3
+        # 4. Salvar como MP3 com speed e pitch
         out_path = Path(output_mp3_path).resolve()
         out_path.parent.mkdir(parents=True, exist_ok=True)
-        self._export_to_mp3(combined_audio, sample_rate, out_path)
+        self._export_to_mp3(combined_audio, sample_rate, out_path, speed=speed, pitch=pitch)
 
         if progress_callback:
             progress_callback(100.0, "Síntese e conversão para MP3 concluídas.")
@@ -319,8 +340,34 @@ class TTSService:
         return arr
 
     @staticmethod
-    def _export_to_mp3(audio_arr: np.ndarray, sample_rate: int, output_path: Path) -> None:
-        """Exporta array de áudio para arquivo MP3 usando FFmpeg com fallback para WAV/cópia."""
+    def _build_atempo_chain(tempo: float) -> str:
+        """
+        Constrói cadeia de filtros FFmpeg 'atempo' para qualquer fator positivo.
+        O filtro atempo do FFmpeg suporta valores entre 0.5 e 2.0.
+        Valores fora desse intervalo são divididos em múltiplos filtros encadeados.
+        """
+        t = float(tempo)
+        if t <= 0:
+            return "atempo=1.0"
+        factors = []
+        while t > 2.0:
+            factors.append(2.0)
+            t /= 2.0
+        while t < 0.5:
+            factors.append(0.5)
+            t /= 0.5
+        factors.append(round(t, 4))
+        return ",".join(f"atempo={f}" for f in factors)
+
+    @staticmethod
+    def _export_to_mp3(
+        audio_arr: np.ndarray,
+        sample_rate: int,
+        output_path: Path,
+        speed: float = 1.0,
+        pitch: float = 0.0,
+    ) -> None:
+        """Exporta array de áudio para arquivo MP3 usando FFmpeg com suporte a speed/pitch e fallback."""
         # Normalização para int16
         if audio_arr.dtype in (np.float32, np.float64):
             max_val = np.max(np.abs(audio_arr))
@@ -336,18 +383,34 @@ class TTSService:
         try:
             wavfile.write(temp_wav_path, sample_rate, int16_arr)
 
-            # Tenta converter via FFmpeg
+            # Construção dos filtros de áudio FFmpeg
+            audio_filter: Optional[str] = None
+            if pitch != 0.0:
+                pitch_scale = 2.0 ** (pitch / 12.0)
+                new_rate = int(sample_rate * pitch_scale)
+                total_tempo = (1.0 / pitch_scale) * speed
+                atempo_chain = TTSService._build_atempo_chain(total_tempo)
+                audio_filter = f"asetrate={new_rate},aresample={sample_rate},{atempo_chain}"
+            elif speed != 1.0:
+                audio_filter = TTSService._build_atempo_chain(speed)
+
+            # Monta comando FFmpeg
             ffmpeg_cmd = [
                 "ffmpeg",
                 "-y",
                 "-i",
                 temp_wav_path,
+            ]
+            if audio_filter:
+                ffmpeg_cmd.extend(["-af", audio_filter])
+            ffmpeg_cmd.extend([
                 "-codec:a",
                 "libmp3lame",
                 "-q:a",
                 "2",
                 str(output_path),
-            ]
+            ])
+
             result = subprocess.run(
                 ffmpeg_cmd,
                 stdout=subprocess.DEVNULL,
