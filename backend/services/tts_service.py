@@ -121,35 +121,15 @@ class TTSService:
         except Exception:
             device = "cpu"
 
-        # 1. Prioridade máxima: Chatterbox V3 PT-BR (Single Language Pack dedicado pt-br)
+        # Exclusivo: Chatterbox V3 PT-BR (Single Language Pack oficial pt-BR)
         try:
             self._model = self._load_pt_br_model(device)
             return self._model
         except Exception as err_pt_br:
-            # 2. Fallback para ChatterboxMultilingualTTS genérico
-            try:
-                from chatterbox import ChatterboxMultilingualTTS
-                self._model = ChatterboxMultilingualTTS.from_pretrained(device=device)
-                return self._model
-            except Exception as err_mtl:
-                # 3. Fallback para ChatterboxTTS padrão
-                try:
-                    from chatterbox import ChatterboxTTS
-                    self._model = ChatterboxTTS.from_pretrained(device=device)
-                    return self._model
-                except Exception as err_std:
-                    try:
-                        import chatterbox_tts  # type: ignore
-                        if hasattr(chatterbox_tts, "ChatterboxTTS"):
-                            self._model = chatterbox_tts.ChatterboxTTS.from_pretrained(device=device)
-                            return self._model
-                    except Exception:
-                        pass
-
-                    raise RuntimeError(
-                        f"Não foi possível carregar o Chatterbox TTS PT-BR ({err_pt_br}; {err_mtl}; {err_std}). "
-                        "Verifique se o pacote 'chatterbox-tts' está instalado e se as dependências estão corretas."
-                    )
+            raise RuntimeError(
+                f"Não foi possível carregar o modelo Chatterbox V3 PT-BR ({err_pt_br}). "
+                "Verifique se os pesos no cache local estão íntegros ou se há conexão com a internet."
+            )
 
     @staticmethod
     def split_text_into_chunks(text: str, max_chars: int = 250) -> list[str]:
