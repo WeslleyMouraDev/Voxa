@@ -1,31 +1,57 @@
-# Task 1 Report: Configurações, Modelos de Dados e Armazenamento JSON Concorrente
+# Relatório da Task 1: Schemas de Dados para Controles de Áudio, Logs e Métricas
 
-## Status
-DONE
+## Visão Geral
+- **Data:** 18/09/2026
+- **Status:** Concluído com sucesso (DONE)
+- **Commit:** `7953b3d` (`feat(models): add voice control parameters and logging schemas`)
 
-## Resumo dos Arquivos Criados
-- `backend/__init__.py`: Inicializador do pacote backend.
-- `backend/models/__init__.py`: Exportação dos enums e schemas Pydantic.
-- `backend/models/enums.py`: Enums `TranscriptionMode` (normal, dynamic, accelerated) e `TaskStatus` (idle, processing, completed, error).
-- `backend/models/schemas.py`: Schemas Pydantic `ModeConfig`, `SettingsSchema`, `VoiceSchema`, `HistoryItemSchema`, `NarrationRequestSchema`, `TranscriptionRequestSchema`, `NarrationAndTranscriptionRequestSchema`.
-- `backend/config.py`: Resolução de caminhos base (`BASE_DIR`), diretórios (`data`, `voices`, `output`) com auto-criação e referências a arquivos JSON de persistência.
-- `backend/storage/__init__.py`: Exportação das classes e instâncias de armazenamento.
-- `backend/storage/json_store.py`: Implementação de `JSONStore` thread-safe com `threading.RLock`, escrita atômica via arquivo temporário e `os.replace`.
-- `backend/storage/settings_store.py`: `SettingsStore` com carregamento de defaults, validação e persistência segura de configurações.
-- `backend/storage/voice_store.py`: `VoiceStore` com suporte a listagem, busca, voz padrão única e remoção lógica/física.
-- `backend/storage/history_store.py`: `HistoryStore` com ordenação decrescente por `created_at`, busca, deleção com limpeza de arquivos físicos (.mp3 e .srt) e `clear_all`.
-- `tests/__init__.py`: Pacote de testes.
-- `tests/test_storage.py`: Suíte de testes unitários cobrindo enums, schemas, escrita atômica, concorrência multi-thread e ciclos completos de Settings, Voice e History.
+## Alterações Realizadas
 
-## Resultado dos Testes
-Comando executado: `python -m pytest tests/test_storage.py -v`
-Resultado:
-- `test_enums`: PASSED
-- `test_schemas_defaults_and_validation`: PASSED
-- `test_json_store_atomic_write_and_read`: PASSED
-- `test_json_store_concurrency`: PASSED
-- `test_settings_store_lifecycle`: PASSED
-- `test_voice_store_lifecycle`: PASSED
-- `test_history_store_lifecycle`: PASSED
+### 1. `backend/models/schemas.py`
+- **`NarrationRequestSchema`**:
+  - Adicionados campos de modulação:
+    - `speed: float` (default `1.0`, `ge=0.5`, `le=2.0`)
+    - `max_pause: float` (default `0.3`, `ge=0.0`, `le=2.0`)
+    - `pitch: float` (default `0.0`, `ge=-12.0`, `le=12.0`)
+    - `presence: float` (default `0.5`, `ge=0.0`, `le=1.0`)
+- **`NarrationAndTranscriptionRequestSchema`**:
+  - Adicionados os mesmos quatro campos (`speed`, `max_pause`, `pitch`, `presence`) com idênticos defaults e limites de validação.
+- **`HistoryItemSchema`**:
+  - Adicionados os campos opcionais de controle com defaults retrocompatíveis:
+    - `speed: Optional[float] = Field(default=1.0)`
+    - `max_pause: Optional[float] = Field(default=0.3)`
+    - `pitch: Optional[float] = Field(default=0.0)`
+    - `presence: Optional[float] = Field(default=0.5)`
+- **`LogEntrySchema` (Novo)**:
+  - `id: int`
+  - `timestamp: str`
+  - `level: str`
+  - `message: str`
+  - `source: str = "app"`
+- **`SystemMetricsSchema` (Novo)**:
+  - `cpu_percent: float`
+  - `ram_used_gb: float`
+  - `ram_total_gb: float`
+  - `ram_percent: float`
 
-Total: 7 passed in 0.39s (100% de sucesso).
+### 2. `tests/test_schemas_controls.py` (Novo)
+- 22 testes unitários cobrindo:
+  - Valores padrão dos controles em `NarrationRequestSchema`.
+  - Validações de limites fora do intervalo (inferior e superior) para `speed`, `max_pause`, `pitch` e `presence`.
+  - Valores padrão e limites de validação para `NarrationAndTranscriptionRequestSchema`.
+  - Valores padrão e aceitação de valores customizados em `HistoryItemSchema`.
+  - Criação e integridade de campos para `LogEntrySchema` e `SystemMetricsSchema`.
+
+## Ciclo TDD e Verificação
+
+1. **RED (Fase de Falha):**
+   - Execução: `.venv\Scripts\python.exe -m pytest tests/test_schemas_controls.py -v`
+   - Resultado: Falha esperada durante a importação (`ImportError: cannot import name 'LogEntrySchema' from 'backend.models.schemas'`).
+2. **GREEN (Fase de Implementação e Sucesso):**
+   - Execução: `.venv\Scripts\python.exe -m pytest tests/test_schemas_controls.py -v`
+   - Resultado: 22 testes passaram em 0.17s.
+3. **Regressão Completa:**
+   - Execução: `.venv\Scripts\python.exe -m pytest tests/ -v`
+   - Resultado: 104 testes passaram sem nenhuma falha (100% verde).
+4. **Knowledge Graph:**
+   - Atualizado via `graphify update .`.

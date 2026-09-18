@@ -1,102 +1,82 @@
-# Task 5: Endpoints FastAPI e Servidor da Aplicação
+# Task 5 Brief: Interface Web — Drawer de Logs em Tempo Real e Métricas
 
 ## Objetivo
-Implementar a API REST e streaming SSE com FastAPI, integrando todos os serviços criados nas tarefas anteriores:
-- Configurações (`/api/settings`)
-- Vozes (`/api/voices`)
-- Histórico (`/api/history`)
-- Narração (`/api/narrate`)
-- Transcrição (`/api/transcribe`)
-- Fluxo Direto (`/api/narrate-and-transcribe`)
-- Progresso em tempo real SSE (`/api/progress/{task_id}`)
-- Servir arquivos de saída (`/output/...`) e arquivos de vozes (`/voices/...`)
-- Arquivo principal `backend/main.py` com CORS e montagem estática de `frontend/`
+Implementar o painel deslizante inferior (drawer DevTools) de logs em tempo real na interface web do Voxa, com conexão WebSocket, métricas dinâmicas de CPU/RAM, filtros por nível e texto, auto-scroll inteligente e botão flutuante persistente em toda a SPA.
 
-## Arquivos a Criar
-- `backend/routers/__init__.py`
-- `backend/routers/settings.py`
-- `backend/routers/voices.py`
-- `backend/routers/history.py`
-- `backend/routers/narration.py`
-- `backend/routers/transcription.py`
-- `backend/routers/progress.py`
-- `backend/main.py`
-- `tests/test_api.py`
+## Arquivos a Criar / Modificar
+- Criar: `frontend/js/components/log-drawer.js`
+- Modificar: `frontend/index.html`
+- Modificar: `frontend/css/style.css`
+- Modificar: `frontend/js/app.js`
+- Modificar: `tests/test_frontend.py`
+- Relatório: `d:\Projetos\Voxa\.superpowers\sdd\task-5-report.md`
 
-## Especificações Técnicas e Endpoints
+## Requisitos Técnicos
 
-### 1. `backend/routers/settings.py`
-- `GET /api/settings`: Retorna `SettingsSchema`.
-- `PUT /api/settings`: Recebe `SettingsSchema` e salva via `SettingsStore.update_settings()`. Aplica o limite de CPU atualizado no `CPULimiter`.
+### 1. `frontend/index.html`
+- Inserir o botão toggle de logs no rodapé (visível em qualquer página):
+  ```html
+  <button id="btn-toggle-logs" class="btn-toggle-logs" title="Abrir painel de logs e terminal em tempo real">
+    <span class="log-icon">🖥️</span>
+    <span class="log-btn-text">Terminal</span>
+    <span id="log-error-badge" class="log-error-badge hidden">0</span>
+  </button>
+  ```
+- Inserir a estrutura do Drawer de logs (fora do `<main id="main-content">`):
+  ```html
+  <div id="log-drawer" class="log-drawer collapsed">
+    <div class="log-drawer-resize-handle" id="log-drawer-resize-handle"></div>
+    <div class="log-drawer-header">
+      <div class="log-header-title">
+        <span>⚡ Terminal em Tempo Real</span>
+        <div class="metrics-badges">
+          <span class="metric-badge" id="metric-cpu">CPU: --%</span>
+          <span class="metric-badge" id="metric-ram">RAM: -- GB (--%)</span>
+        </div>
+      </div>
+      <div class="log-header-controls">
+        <select id="log-level-filter" class="log-select">
+          <option value="">Todos os Níveis</option>
+          <option value="INFO">INFO</option>
+          <option value="WARNING">WARNING</option>
+          <option value="ERROR">ERROR</option>
+          <option value="DEBUG">DEBUG</option>
+        </select>
+        <input type="text" id="log-search-input" class="log-search" placeholder="Filtrar logs..." />
+        <button id="btn-autoscroll" class="log-ctrl-btn active" title="Pausar / Retomar Auto-Scroll">⬇ Auto-Scroll</button>
+        <button id="btn-clear-logs" class="log-ctrl-btn" title="Limpar logs">🗑️ Limpar</button>
+        <button id="btn-close-drawer" class="log-ctrl-btn close-btn" title="Minimizar painel">✕</button>
+      </div>
+    </div>
+    <div class="log-drawer-body" id="log-entries-container">
+      <!-- Linhas de logs injetadas dinamicamente -->
+    </div>
+  </div>
+  ```
 
-### 2. `backend/routers/voices.py`
-- `GET /api/voices`: Lista todas as vozes (`list[VoiceSchema]`).
-- `POST /api/voices`: Recebe multipart form (`name: str`, `file: UploadFile`, `is_default: bool = False`).
-  - Salva o arquivo de áudio enviado em `voices/<uuid>_<filename>`.
-  - Cadastra no `VoiceStore`.
-  - Retorna `VoiceSchema` com status 201.
-- `PUT /api/voices/{id}/default`: Define a voz como padrão. Se não encontrada, 404.
-- `DELETE /api/voices/{id}`: Exclui a voz e o arquivo físico de amostra. Se não encontrada, 404.
+### 2. `frontend/css/style.css`
+- Estilos para:
+  - `.btn-toggle-logs`: fixo no canto inferior direito (`position: fixed; bottom: 20px; right: 24px; z-index: 990;`), fundo escuro elegante com borda e hover iluminado, badge vermelha de erro pulsante.
+  - `.log-drawer`: fixo no rodapé (`position: fixed; bottom: 0; left: 240px; right: 0; z-index: 1000; height: 320px; transition: transform 0.25s ease; background: rgba(13, 17, 23, 0.96); backdrop-filter: blur(12px); border-top: 1px solid var(--border);`), classe `.collapsed` com `transform: translateY(100%); pointer-events: none;`.
+  - `.log-drawer-resize-handle`: barra superior com cursor `ns-resize`.
+  - `.log-drawer-header`: layout flex, botões compactos, mostradores de métricas com background sutil.
+  - `.log-drawer-body`: tipografia `JetBrains Mono, monospace`, scrollbar escura estilizada, seleção de texto limpa.
+  - `.log-entry`: layout com timestamp cinza, badge de level colorido (verde para INFO, amarelo para WARNING, vermelho para ERROR, ciano/cinza para DEBUG), source em roxo e texto da mensagem com quebra de linha preservada.
 
-### 3. `backend/routers/history.py`
-- `GET /api/history`: Retorna lista ordenada de `HistoryItemSchema`.
-- `DELETE /api/history/{id}`: Exclui o item e remove arquivos físicos de `.mp3` e `.srt` do disco.
-- `DELETE /api/history`: Limpa todo o histórico e apaga todos os arquivos físicos gerados.
+### 3. `frontend/js/components/log-drawer.js`
+- Conexão WebSocket em `${protocol}//${window.location.host}/api/ws/logs`.
+- Reconexão com retry automático.
+- Renderização de linhas com sanitização anti-XSS (`escapeHtml`).
+- Lógica de auto-scroll (desativa se usuário sobe o scroll, reativa ao clicar no botão ou descer até o fim).
+- Filtros por nível e texto em memória.
+- Métricas atualizadas no DOM quando evento do tipo `"metrics"` for recebido.
+- Persistência no `localStorage` (`voxa_log_drawer_open` e `voxa_log_drawer_height`).
 
-### 4. `backend/routers/narration.py`
-- `POST /api/narrate`:
-  - Recebe `NarrationRequestSchema(text, voice_id)`.
-  - Se `voice_id` não for fornecido, usa a voz padrão do `VoiceStore`. Se não houver voz cadastrada, retorna HTTP 400 informando que nenhuma voz está disponível.
-  - Cria tarefa no `TaskManager` e despacha em background (via `asyncio.create_task` ou `BackgroundTasks`).
-  - Fluxo em background:
-    1. Gera áudio via `TTSService.generate_speech` com callback de progresso no `TaskManager` (0% a 90%).
-    2. Registra no `HistoryStore`.
-    3. Finaliza com `TaskManager.complete_task(task_id, {"history_id": ..., "audio_url": ...})`.
-  - Retorna imediatamente `{"task_id": task_id}` com status 202.
-- `POST /api/narrate-and-transcribe`:
-  - Recebe `NarrationAndTranscriptionRequestSchema(text, voice_id, mode)`.
-  - Se `voice_id` não for fornecido, usa a voz padrão. Se não houver voz, HTTP 400.
-  - Cria tarefa no `TaskManager` e despacha em background:
-    1. Gera áudio MP3 (0% a 60% de progresso).
-    2. Transcreve o MP3 gerado via `STTService.transcribe_audio` no modo selecionado (60% a 90%).
-    3. Salva arquivo `.srt` correspondente no mesmo diretório do MP3.
-    4. Registra no `HistoryStore` com `audio_path` e `srt_path`.
-    5. Finaliza com `TaskManager.complete_task(task_id, {"history_id": ..., "audio_url": ..., "srt_url": ...})`.
-  - Retorna imediatamente `{"task_id": task_id}` com status 202.
+### 4. `frontend/js/app.js`
+- Importar e inicializar `initLogDrawer()`.
 
-### 5. `backend/routers/transcription.py`
-- `POST /api/transcribe`:
-  - Suporta upload de arquivo de áudio (`file: UploadFile`) ou caminho de áudio existente (`audio_path: str`), mais `mode: TranscriptionMode`.
-  - Salva arquivo temporário se for upload.
-  - Cria tarefa no `TaskManager` e despacha em background:
-    1. Transcreve o áudio via `STTService.transcribe_audio`.
-    2. Salva `.srt`.
-    3. Registra no `HistoryStore`.
-    4. Conclui tarefa.
-  - Retorna imediatamente `{"task_id": task_id}` com status 202.
-
-### 6. `backend/routers/progress.py`
-- `GET /api/progress/{task_id}`:
-  - Consome `TaskManager.subscribe(task_id)`.
-  - Retorna `EventSourceResponse` (ou streaming de texto `text/event-stream`) com eventos formatados em JSON: `data: {"status": ..., "progress": ..., "message": ..., "result": ..., "error": ...}\n\n`.
-
-### 7. `backend/main.py`
-- Inicializa FastAPI com título "Voxa" e versão "1.0.0".
-- CORS middleware permitindo `*`.
-- Monta rotas estáticas:
-  - `/voices` apontando para `VOICES_DIR`
-  - `/output` apontando para `OUTPUT_DIR`
-  - `/` servindo `frontend/` (quando a pasta existir)
-- Inclui todos os routers com prefixo ou rotas definidas.
-
-## Requisitos de Testes (`tests/test_api.py`)
-- Usar `fastapi.testclient.TestClient` (ou `httpx.AsyncClient`).
-- Testar endpoints de Settings (GET e PUT).
-- Testar endpoints de Voices (POST upload, GET list, PUT default, DELETE).
-- Testar endpoints de History (GET list, DELETE individual, DELETE all).
-- Testar endpoints de Narration e Narrate-and-Transcribe retornando `task_id` e 400 quando não há voz.
-- Testar endpoint de progresso SSE emitindo status correto.
-
-## Comandos
-- Testes: `python -m pytest tests/test_api.py -v`
-- Commits: `git add backend/ tests/test_api.py && git commit -m "feat: add fastapi routers for voices, history, settings, narration, and transcription with sse"`
+### 5. `tests/test_frontend.py`
+- Adicionar asserções verificando que `index.html` contém `#log-drawer`, `#btn-toggle-logs`, e que `log-drawer.js` existe e é referenciado ou importado no frontend.
+- Rodar `.venv\Scripts\python.exe -m pytest tests/test_frontend.py -v`.
+- Rodar a suíte inteira de 130 testes para garantir que tudo continue passando.
+- Fazer commit git: `feat(ui): implement real-time log drawer with system metrics and devtools style`.

@@ -1,107 +1,77 @@
-# Task 6: Interface Web Dark Premium (HTML5, CSS3, Vanilla JS Reativo)
+# Task 6 Brief: Interface Web — Controles de Geração (Accordion) e Página #api-docs
 
 ## Objetivo
-Criar uma interface gráfica web moderna, ultra leve, sem build step, 100% controlável pelo navegador, com tema Dark Premium (#0a0a0f, #12121a, acentos roxo vibrante #7c3aed e verde #10b981), tipografia elegante (Inter e JetBrains Mono), SPA fluida e integração completa com todos os endpoints da API e SSE.
+Implementar na interface web do Voxa:
+1. O componente retrátil (Accordion) "🎛️ Ajustes de Voz & Estilo" na tela de narração, com sliders interativos para Ritmo, Pausa máxima, Tom e Presença, valores em tempo real, botão de reset e envio dos parâmetros nas chamadas de síntese.
+2. Atualizar o cliente `frontend/js/api.js` para enviar os parâmetros de controle de voz.
+3. Criar a nova página `#api-docs` (`frontend/js/pages/api-docs.js`) com catálogo completo dos endpoints REST em PT-BR, snippets `curl` com botão de copiar e atalho para o Swagger interativo (`/docs`).
+4. Integrar a rota `#api-docs` no roteador da SPA (`frontend/js/app.js`) e adicionar atalho na navegação.
 
-## Arquivos a Criar
-- `frontend/assets/logo.svg`
-- `frontend/css/style.css`
-- `frontend/js/api.js`
-- `frontend/js/state.js`
-- `frontend/js/components/toast.js`
-- `frontend/js/components/modal.js`
-- `frontend/js/pages/narrate.js`
-- `frontend/js/pages/voices.js`
-- `frontend/js/pages/history.js`
-- `frontend/js/pages/settings.js`
-- `frontend/js/app.js`
-- `frontend/index.html`
-- `tests/test_frontend.py`
+## Arquivos a Criar / Modificar
+- Modificar: `frontend/js/pages/narrate.js`
+- Modificar: `frontend/js/api.js`
+- Criar: `frontend/js/pages/api-docs.js`
+- Modificar: `frontend/js/app.js`
+- Modificar: `frontend/css/style.css`
+- Modificar: `tests/test_frontend.py`
+- Relatório: `d:\Projetos\Voxa\.superpowers\sdd\task-6-report.md`
 
-## Especificações da Interface e Componentes
+## Requisitos Técnicos
 
-### 1. Paleta de Cores e Estilo Visual (`frontend/css/style.css`)
-- Fundo do app: `#0a0a0f`
-- Fundo de cartões/sidebar: `#12121a`
-- Fundo de inputs/textareas: `#161622`
-- Bordas sutis: `#222233`
-- Cores de acento:
-  - Roxo primário: `#7c3aed`, hover: `#9333ea`
-  - Verde sucesso: `#10b981`
-  - Vermelho erro/exclusão: `#ef4444`
-  - Âmbar alerta: `#f59e0b`
-- Tipografia: Inter (sans-serif) para texto e interface, JetBrains Mono para timestamps, códigos e durações.
+### 1. `frontend/js/pages/narrate.js`
+- Adicionar o Accordion entre o seletor de voz e os modos de legenda:
+  - Header: `🎛️ Ajustes de Voz & Estilo (Ritmo, Pausa, Tom, Presença)`
+  - Botão de reset rápido: `↺ Resetar`
+  - Indicador de estado (aberto/fechado com persistência no `localStorage`)
+  - 4 sliders:
+    1. **Ritmo (Velocidade)**: id `voice-speed`, range `0.5` a `2.0`, step `0.05`, default `1.0`, mostrador `1.0x`.
+    2. **Pausa Máxima**: id `voice-max-pause`, range `0.0` a `2.0`, step `0.05`, default `0.3`, mostrador `300ms` / `0.3s`.
+    3. **Tom (Pitch)**: id `voice-pitch`, range `-12` a `12`, step `1`, default `0`, mostrador `0 st` (Normal).
+    4. **Presença Vocal**: id `voice-presence`, range `0.0` a `1.0`, step `0.05`, default `0.5`, mostrador `50%`.
+- Salvar e restaurar valores do `localStorage` (`voxa_voice_speed`, `voxa_voice_max_pause`, etc.).
+- Nos botões `btn-narrate-only` e `btn-narrate-transcribe`:
+  - Ler valores dos 4 sliders e repassar para `api.startNarration` e `api.startNarrationAndTranscription`.
 
-### 2. Layout SPA (`frontend/index.html`)
-- **Sidebar Fixa:**
-  - Logo Voxa vetorial com gradiente roxo + nome Voxa e badge "PT-BR".
-  - Itens de navegação:
-    - 🎙 Narrar (`#narrate`)
-    - 🗣 Vozes (`#voices`)
-    - 📋 Histórico (`#history`)
-    - ⚙ Configurações (`#settings`)
-  - Status do sistema no rodapé da sidebar (indicador verde "Pronto" / roxo "Processando...").
-- **Área Central:**
-  - Carrega dinamicamente a página ativa sem recarregar a tela.
-  - Container de Toasts flutuantes no canto superior direito.
-  - Modais dinâmicos para confirmação (ex: Limpar Tudo, Nova Voz).
+### 2. `frontend/js/api.js`
+- Atualizar `startNarration(text, voiceId = null, controls = {})`:
+  ```javascript
+  const payload = { text, ...controls };
+  if (voiceId) payload.voice_id = voiceId;
+  ```
+- Atualizar `startNarrationAndTranscription(text, voiceId = null, mode = 'normal', controls = {})`:
+  ```javascript
+  const payload = { text, mode, ...controls };
+  if (voiceId) payload.voice_id = voiceId;
+  ```
 
-### 3. Módulos JavaScript
-- **`frontend/js/api.js`:**
-  - Wrapper para chamadas `fetch` com tratamento de erros.
-  - Função `listenProgress(taskId, onMessage, onComplete, onError)` usando `EventSource` para streaming de progresso em tempo real.
-- **`frontend/js/state.js`:**
-  - Estado global leve: vozes carregadas, voz padrão, configurações ativas, histórico recente, tarefa em andamento.
-- **`frontend/js/components/toast.js`:**
-  - `showToast(message, type = "success" | "error" | "info")` com auto-dismiss suave.
-- **`frontend/js/components/modal.js`:**
-  - `showConfirmModal(title, message, onConfirm, confirmText, danger = false)` para confirmações seguras.
-- **`frontend/js/pages/narrate.js`:**
-  - Textarea com redimensionamento vertical, placeholder sugestivo e contador de caracteres em tempo real.
-  - Seletor de voz com destaque para voz padrão (★) e atalho para ir cadastrar voz caso não haja nenhuma.
-  - Seletor dos 3 modos de transcrição:
-    - **Normal** (4-6s por bloco — ideal para 1 imagem por cena)
-    - **Dinâmico** (2-4s por bloco — ideal para Reels/TikTok)
-    - **Acelerado** (1-2s por bloco — ideal para retenção máxima)
-  - Botões de Ação:
-    - `[🎙 Apenas Narrar]` (Gera MP3)
-    - `[📝 Apenas Transcrever]` (Upload de áudio existente para gerar SRT)
-    - `[🎙📝 Narrar + Transcrever]` (Fluxo direto destacado gerando MP3 + SRT sincronizados)
-  - Painel de Progresso Ativo:
-    - Barra de progresso com porcentagem e animação de gradiente.
-    - Mensagem explicativa em tempo real ("Dividindo texto...", "Sintetizando voz...", "Gerando timestamps de precisão...").
-  - Painel de Resultado:
-    - Player de áudio HTML5 com controles elegantes.
-    - Botões de download do MP3 e download do arquivo SRT.
-- **`frontend/js/pages/voices.js`:**
-  - Lista de vozes cadastradas em grid de cards.
-  - Em cada card: nome, player de amostra da voz, botão de estrela para definir como padrão instantaneamente, e botão de lixeira para excluir.
-  - Botão `[+ Adicionar Nova Voz]` que abre modal:
-    - Campo de nome/apelido.
-    - Input para upload de áudio de referência (WAV, MP3 de 5 a 30s).
-    - Checkbox "Definir como voz padrão".
-    - Envio multipart e atualização imediata da lista.
-- **`frontend/js/pages/history.js`:**
-  - Barra de topo com resumo de itens e botão `[🗑 Limpar Histórico Completo]` com modal de confirmação.
-  - Tabela ou lista de cards com:
-    - Trecho do texto narrado.
-    - Data e hora formatada.
-    - Voz utilizada.
-    - Modo de legenda usado.
-    - Player de áudio embutido.
-    - Botão de baixar MP3 e baixar SRT (se disponível).
-    - Botão de excluir item individualmente.
-- **`frontend/js/pages/settings.js`:**
-  - Slider interativo de limitação de CPU (25% a 100%) exibindo a quantidade estimada de núcleos.
-  - Configuração de durações mínimas e máximas para os 3 modos (Normal, Dinâmico, Acelerado).
-  - Porta do servidor e alternador de abrir navegador automaticamente.
-  - Botão "Salvar Configurações" com feedback toast instantâneo.
+### 3. `frontend/js/pages/api-docs.js`
+- Exportar `renderApiDocsPage(container)`.
+- Estrutura da página:
+  - Título: `📚 Documentação da API REST & Integração Externa`
+  - Descrição: Documentação completa para controle programático do Voxa 100% via API.
+  - Botão de destaque: `🚀 Abrir Swagger UI (/docs)` (abre em nova aba ou exibe iframe integrado).
+  - Listagem dos endpoints agrupados:
+    - **Narração & Transcrição**: `POST /api/narrate`, `POST /api/narrate-and-transcribe`, `POST /api/transcribe`, `GET /api/progress/{task_id}`.
+    - **Vozes**: `GET /api/voices`, `POST /api/voices`, `PUT /api/voices/{id}/default`, `DELETE /api/voices/{id}`.
+    - **Histórico**: `GET /api/history`, `DELETE /api/history/{id}`, `DELETE /api/history`.
+    - **Logs & Sistema**: `GET /api/logs`, `DELETE /api/logs`, `WS /api/ws/logs`, `GET /api/system/metrics`.
+    - **Configurações**: `GET /api/settings`, `PUT /api/settings`.
+  - Cada endpoint inclui:
+    - Badge do método (GET, POST, PUT, DELETE, WS) com cor diferenciada.
+    - Endpoint path e descrição em PT-BR.
+    - Bloco de comando `curl` com exemplo pronto para executar.
+    - Botão interativo `📋 Copiar cURL` com feedback visual de confirmação.
 
-## Requisitos de Testes (`tests/test_frontend.py`)
-- Testar que a rota raiz `/` serve o `index.html` com status 200 e tipo `text/html`.
-- Testar que os arquivos estáticos de CSS, JS e SVG são acessíveis com status 200.
-- Testar que o HTML possui referências aos arquivos CSS e JS corretos.
+### 4. `frontend/js/app.js`
+- Registrar `api-docs: renderApiDocsPage` nas rotas do SPA.
+- Adicionar link da API no menu lateral da sidebar (`#api-docs` com ícone 📚 ou 🔌).
 
-## Comandos
-- Testes: `python -m pytest tests/test_frontend.py -v`
-- Commits: `git add frontend/ tests/test_frontend.py && git commit -m "feat: create dark premium web interface with full spa controls, sse progress, and audio player"`
+### 5. `frontend/css/style.css`
+- Estilização do accordion de ajustes de voz e dos sliders customizados.
+- Estilização dos blocos de documentação da API, badges de métodos HTTP e botões de copiar cURL.
+
+### 6. Ciclo TDD
+- Adicionar testes em `tests/test_frontend.py` validando os novos componentes e rotas.
+- Rodar `.venv\Scripts\python.exe -m pytest tests/test_frontend.py -v`.
+- Rodar a suíte global de testes (`pytest tests/ -v`) para garantir zero regressões.
+- Fazer commit git: `feat(ui): add voice adjustments accordion and api documentation page`.

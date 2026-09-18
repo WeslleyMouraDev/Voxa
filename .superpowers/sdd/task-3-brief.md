@@ -1,72 +1,80 @@
-# Task 3: Algoritmo de Geração de Legenda SRT Inteligente (3 Modos)
+# Task 3 Brief: Controles de Geração no Motor TTS (Ritmo, Pausa, Tom, Presença)
 
 ## Objetivo
-Implementar o módulo `backend/services/srt_builder.py` para converter uma lista de palavras com timestamps (`WordTimestamp`) em um arquivo de legendas `.srt` perfeitamente sincronizado com um dos 3 formatos de vídeo:
-- **Normal:** 4 a 6 segundos por bloco (para 1 imagem/cena a cada 4-6s)
-- **Dinâmico:** 2 a 4 segundos por bloco (para cortes médios/Reels/TikToks)
-- **Acelerado:** 1 a 2 segundos por bloco (para cortes rápidos/VSL acelerada)
+Atualizar o `TTSService` em `backend/services/tts_service.py` para suportar os controles de geração de voz (`speed`, `max_pause`, `pitch`, `presence`), integrando com o Chatterbox (`exaggeration`) e FFmpeg (`atempo`, `asetrate`, concatenação com pausas).
 
-## Arquivos a Criar
-- `backend/services/srt_builder.py`
-- `tests/test_srt_builder.py`
+## Arquivos a Modificar / Criar
+- Modificar: `backend/services/tts_service.py`
+- Criar: `tests/test_voice_controls.py`
+- Relatório: `d:\Projetos\Voxa\.superpowers\sdd\task-3-report.md`
 
-## Especificações Técnicas e Interfaces
+## Requisitos Técnicos
 
-### 1. `backend/services/srt_builder.py`
-- Dataclass / Model `WordTimestamp`:
-  - `word: str`
-  - `start: float` (em segundos)
-  - `end: float` (em segundos)
-  - `probability: float = 1.0`
-- Dataclass / Model `SRTSegment`:
-  - `index: int`
-  - `start: float`
-  - `end: float`
-  - `text: str`
-- Classe `SRTBuilder`:
-  - `format_timestamp(seconds: float) -> str`:
-    - Converte float em string de formato SRT: `HH:MM:SS,mmm`
-    - Exemplo: `0.0` -> `00:00:00,000`, `65.432` -> `00:01:05,432`.
-  - `build_segments(words: list[WordTimestamp], mode: TranscriptionMode = TranscriptionMode.NORMAL, min_seconds: Optional[float] = None, max_seconds: Optional[float] = None) -> list[SRTSegment]`:
-    - Se `min_seconds` ou `max_seconds` não forem fornecidos, obtém os padrões do enum:
-      - `NORMAL`: min=4.0, max=6.0
-      - `DYNAMIC`: min=2.0, max=4.0
-      - `ACCELERATED`: min=1.0, max=2.0
-    - Algoritmo de agrupamento:
-      - Agrupa palavras consecutivas em um segmento corrente.
-      - A duração do segmento é `current_end - current_start`.
-      - Quebra de segmento ocorre quando:
-        1. O segmento atingiu a duração mínima (`min_seconds`) E a palavra atual termina com pontuação forte (`.`, `!`, `?`, `;`, `\n`)
-        2. OU a duração atinge ou excede a duração máxima (`max_seconds`)
-        3. OU há um silêncio substancial entre a palavra anterior e a atual (ex: `word.start - prev_word.end >= 1.0` segundos) e o segmento já tem pelo menos `min_seconds * 0.7` segundos.
-      - Ao quebrar, inicia um novo segmento para a próxima palavra.
-      - No final, adiciona o último segmento acumulado se houver palavras.
-      - Garante que cada segmento tenha índice sequencial 1, 2, 3...
-  - `build_srt(words: list[WordTimestamp], mode: TranscriptionMode = TranscriptionMode.NORMAL, min_seconds: Optional[float] = None, max_seconds: Optional[float] = None) -> str`:
-    - Constrói a string final no formato padrão SRT:
-      ```
-      1
-      00:00:00,000 --> 00:00:04,500
-      Olá, bem-vindos ao nosso canal.
+### 1. `backend/services/tts_service.py`
+- Atualizar assinatura de `generate_speech`:
+  ```python
+  def generate_speech(
+      self,
+      text: str,
+      voice_sample_path: str | Path,
+      output_mp3_path: str | Path,
+      progress_callback: Optional[Callable[[float, str], None]] = None,
+      speed: float = 1.0,
+      max_pause: float = 0.3,
+      pitch: float = 0.0,
+      presence: float = 0.5,
+  ) -> Path:
+  ```
+- **Presença (`presence`)**:
+  - Na chamada de `gen_method(chunk, **kwargs)`:
+    Se `"exaggeration"` estiver na assinatura de `generate` ou se `has_kwargs` for True:
+    Passar `kwargs["exaggeration"] = float(presence)`.
+- **Pausa máxima (`max_pause`)**:
+  - Ao concatenar a lista `audio_chunks`:
+    Se houver mais de 1 chunk e `max_pause > 0`:
+    Criar silêncio: `pause_samples = int(sample_rate * max_pause)`.
+    `silence_array = np.zeros(pause_samples, dtype=np.float32)`.
+    Intercalar `silence_array` entre os chunks de áudio na concatenação final.
+- **Ritmo (`speed`) e Tom (`pitch`)**:
+  - Atualizar `_export_to_mp3`:
+    ```python
+    @staticmethod
+    def _export_to_mp3(
+        audio_arr: np.ndarray,
+        sample_rate: int,
+        output_path: Path,
+        speed: float = 1.0,
+        pitch: float = 0.0,
+    ) -> None:
+    ```
+  - Construção do filtro de áudio FFmpeg (`-af`):
+    - Se `pitch != 0.0`:
+      - Razão de escala semitons: `pitch_scale = 2.0 ** (pitch / 12.0)`.
+      - Efeito: alterar taxa de amostragem e compensar tempo:
+        `new_rate = int(sample_rate * pitch_scale)`
+        O tempo de compensação do pitch é `1.0 / pitch_scale`.
+        O tempo total a aplicar no `atempo` é `total_tempo = (1.0 / pitch_scale) * speed`.
+        Para lidar com `atempo` em cadeias (pois cada filtro `atempo` suporta de 0.5 a 2.0):
+        Montar filtros `atempo` encadeados se `total_tempo < 0.5` ou `total_tempo > 2.0`.
+        Filtro completo:
+        `f"asetrate={new_rate},aresample={sample_rate},{atempo_chain}"`
+    - Se `pitch == 0.0` e `speed != 1.0`:
+      - Montar apenas cadeia de filtros `atempo={speed}` (dividindo em múltiplos se fora de [0.5, 2.0]).
+    - Se houver filtros de áudio, incluir no comando FFmpeg:
+      `["ffmpeg", "-y", "-i", temp_wav_path, "-af", audio_filter, "-codec:a", "libmp3lame", "-q:a", "2", str(output_path)]`
+    - Se não houver filtros (`speed == 1.0` e `pitch == 0.0`), comando permanece idêntico ao atual sem `-af`.
+    - Manter o fallback seguro caso FFmpeg falhe ou não consiga processar.
 
-      2
-      00:00:04,500 --> 00:00:08,200
-      Hoje vamos falar sobre inteligência artificial.
-      ```
-      (com quebras de linha duplas entre segmentos).
-  - `save_srt_file(srt_content: str, destination_path: Path) -> Path`:
-    - Salva o arquivo no disco garantindo encoding `utf-8`.
+### 2. Testes em `tests/test_voice_controls.py`
+- Teste de `presence`: verificar que `exaggeration` é repassado com o valor de `presence`.
+- Teste de `max_pause`: verificar tamanho do array resultante com e sem pausa entre chunks.
+- Teste de `speed` e `pitch`: verificar construção dos argumentos de filtro do FFmpeg com `unittest.mock.patch("subprocess.run")`.
+- Teste de retrocompatibilidade: verificar que chamar `generate_speech` com apenas os argumentos antigos continua funcionando perfeitamente com valores padrão.
 
-## Requisitos de Testes (`tests/test_srt_builder.py`)
-- Testar formatação de timestamps (`format_timestamp`).
-- Testar geração de SRT vazio (sem palavras -> string vazia).
-- Testar modo Normal (garantindo que segmentos respeitem as durações de ~4s a 6s).
-- Testar modo Dinâmico (segmentos de ~2s a 4s).
-- Testar modo Acelerado (segmentos de ~1s a 2s).
-- Testar respeito a pontuações (`.` quebrando segmentos quando após `min_seconds`).
-- Testar quebras por pausas de silêncio.
-- Testar `save_srt_file` escrevendo arquivo legível no disco.
-
-## Comandos
-- Testes: `python -m pytest tests/test_srt_builder.py -v`
-- Commits: `git add backend/services/srt_builder.py tests/test_srt_builder.py && git commit -m "feat: implement intelligent srt generator for normal, dynamic, and accelerated modes"`
+### 3. Ciclo TDD
+- Criar `tests/test_voice_controls.py`.
+- Rodar `.venv\Scripts\python.exe -m pytest tests/test_voice_controls.py -v` (confirmar falha).
+- Implementar em `backend/services/tts_service.py`.
+- Rodar novamente até 100% verde.
+- Rodar toda a suíte de testes (`tests/test_services.py`, `tests/test_api.py`, etc.) para garantir zero regressões.
+- Fazer commit git: `feat(tts): add voice generation controls for speed, pause, pitch and presence`.

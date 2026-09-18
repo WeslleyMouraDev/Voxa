@@ -1,47 +1,74 @@
-# Task 2: Limitador de Recursos de CPU e Gerenciador de Tarefas em Background (SSE)
+# Task 2 Brief: Serviços de Captura de Logs e Coleta de Métricas
 
 ## Objetivo
-Implementar o limitador de recursos da máquina (`CPULimiter`) para garantir que o processo não congele a CPU nem cause lentidão no sistema operacional, e o gerenciador assíncrono de tarefas (`TaskManager`) com streaming de progresso em tempo real via Server-Sent Events (SSE).
+Implementar o serviço de ring buffer de logs com interceptador de logs do Python (`LogBufferHandler`), interceptador de streams (`StreamInterceptor`) e o serviço de coleta de métricas de sistema (`MetricsService`) usando `psutil`.
 
 ## Arquivos a Criar
-- `backend/services/__init__.py`
-- `backend/services/cpu_limiter.py`
-- `backend/services/task_manager.py`
-- `tests/test_cpu_limiter.py`
-- `tests/test_task_manager.py`
+- `backend/services/log_service.py`
+- `backend/services/metrics_service.py`
+- `tests/test_log_service.py`
+- `tests/test_metrics_service.py`
+- Relatório: `d:\Projetos\Voxa\.superpowers\sdd\task-2-report.md`
 
-## Especificações Técnicas e Interfaces
+## Requisitos Técnicos
 
-### 1. `backend/services/cpu_limiter.py`
-- Classe `CPULimiter`:
-  - `calculate_threads(cpu_percent: int) -> int`:
-    - Obtém o total de CPUs lógicas via `os.cpu_count()` ou `psutil.cpu_count(logical=True)`.
-    - Calcula `max(1, int(total_cores * (cpu_percent / 100.0)))`.
-  - `apply_limits(cpu_percent: int = 75) -> dict`:
-    - Aplica limite de threads no PyTorch se importável (`torch.set_num_threads(n_threads)`). Se PyTorch não estiver instalado ou falhar, captura graciosamente sem quebrar.
-    - Aplica prioridade baixa no processo atual via `psutil.Process()`:
-      - No Windows (`os.name == 'nt'`): `p.nice(psutil.BELOW_NORMAL_PRIORITY_CLASS)`.
-      - No Linux/Unix: `p.nice(10)` (ou fallback se permissão for negada).
-    - Retorna dict com `{"cpu_percent": cpu_percent, "threads": n_threads, "total_cores": total_cores, "nice_applied": bool}`.
+### 1. `backend/services/log_service.py`
+- Importar `collections.deque`, `threading.Lock`, `asyncio`, `logging`, `datetime`, `timezone`, etc.
+- Classe `LogService`:
+  - `__init__(self, max_entries: int = 1000)`:
+    - `self._max_entries = max_entries`
+    - `self._buffer = deque(maxlen=max_entries)`
+    - `self._lock = Lock()`
+    - `self._counter = 0`
+    - `self._subscribers: list[asyncio.Queue] = []`
+  - `add_log(self, level: str, message: str, source: str = "app") -> dict`:
+    - Incrementa `_counter` sob lock.
+    - Timestamp no formato ISO UTC: `datetime.now(timezone.utc).isoformat()`.
+    - Sanitiza `message` (remove quebras de linha residuais no final). Se a mensagem for vazia ou apenas whitespace, pode ignorar.
+    - Entry: `{"id": self._counter, "timestamp": ts, "level": level.upper(), "message": message, "source": source}`.
+    - Adiciona ao `_buffer` sob lock.
+    - Emite para ouvintes (broadcast threadsafe similar ao `TaskManager._broadcast`).
+    - Retorna a entrada criada.
+  - `get_logs(self, level: Optional[str] = None, search: Optional[str] = None, limit: Optional[int] = None) -> list[dict]`:
+    - Retorna cópia dos logs sob lock.
+    - Suporta filtro por `level` (case-insensitive, ex: "ERROR").
+    - Suporta filtro por substring em `search` (case-insensitive dentro de `message` ou `source`).
+    - Aplica `limit` se fornecido (retorna os últimos `limit` logs).
+  - `clear(self) -> None`:
+    - Esvazia `_buffer` e notifica subscribers com evento `{"type": "logs_cleared"}`.
+  - Inscrição assíncrona:
+    - `subscribe(self) -> AsyncGenerator[dict, None]`: registra queue, entrega histórico inicial em lote (`{"type": "log_batch", "data": list_of_logs}`) e depois cede novos logs individuais conforme chegam.
+  - Singleton `log_service = LogService()`.
 
-### 2. `backend/services/task_manager.py`
-- Gerenciador singleton ou classe `TaskManager`:
-  - Modos de tarefa assíncrona: rastreia ID de tarefa, status (`TaskStatus`), progresso numérico (0.0 a 100.0), mensagem de status, resultado e erro.
-  - `create_task(name: str = "") -> str`: gera UUID `task_id`, inicializa status como `TaskStatus.PROCESSING`, progresso 0.0, cria `asyncio.Queue` para ouvintes SSE.
-  - `update_progress(task_id: str, progress: float, message: str) -> None`: atualiza progresso (0-100) e mensagem, emite evento para ouvintes.
-  - `complete_task(task_id: str, result: dict) -> None`: define status como `TaskStatus.COMPLETED`, progresso 100.0, emite evento final para ouvintes e limpa recursos.
-  - `fail_task(task_id: str, error: str) -> None`: define status como `TaskStatus.ERROR`, emite evento de erro para ouvintes.
-  - `get_task(task_id: str) -> Optional[dict]`: retorna dados da tarefa.
-  - `subscribe(task_id: str) -> AsyncGenerator[dict, None]`: gerador assíncrono que consome da fila da tarefa e faz `yield` dos eventos até a tarefa ser concluída ou falhar (SSE ready).
+- Classe `LogBufferHandler(logging.Handler)`:
+  - Recebe `service: Optional[LogService] = None` (se None, usa `log_service`).
+  - Em `emit(self, record: logging.LogRecord)`:
+    - Extrai mensagem formatada `msg = self.format(record)`.
+    - Mapeia `record.levelname` para `level`.
+    - Chama `service.add_log(level=record.levelname, message=msg, source=record.name)`.
 
-## Requisitos de Testes
-- `tests/test_cpu_limiter.py`:
-  - Testar cálculo correto de threads para 25%, 50%, 75%, 100%.
-  - Testar execução de `apply_limits` sem erros (mesmo sem torch ou com mock de psutil).
-- `tests/test_task_manager.py`:
-  - Testar criação de tarefa, fluxo de `update_progress`, `complete_task`, `fail_task`.
-  - Testar o gerador assíncrono `subscribe` com simulação de eventos em sequência.
+- Classe `StreamInterceptor`:
+  - Utilitário para duplicar `sys.stdout` e `sys.stderr`.
+  - Guarda `original_stream` e `service`.
+  - Método `write(text)`: escreve no `original_stream` E, se houver linhas não vazias, envia para `service.add_log(level="INFO"|"ERROR", message=line, source=self.source_name)`.
+  - Método `flush()`: chama `original_stream.flush()`.
+  - Fornecer métodos auxiliares `isatty()`, `fileno()` delegando para `original_stream` caso existam.
 
-## Comandos
-- Testes: `python -m pytest tests/test_cpu_limiter.py tests/test_task_manager.py -v`
-- Commits: `git add backend/services/ tests/test_cpu_limiter.py tests/test_task_manager.py && git commit -m "feat: add cpu limiter and async background task manager with sse"`
+### 2. `backend/services/metrics_service.py`
+- Importar `psutil`.
+- Classe `MetricsService`:
+  - Método estático ou de classe `get_current_metrics() -> dict`:
+    - Coleta `cpu_percent = float(psutil.cpu_percent(interval=None))`
+    - Coleta `mem = psutil.virtual_memory()`
+    - `ram_used_gb = round(mem.used / (1024 ** 3), 2)`
+    - `ram_total_gb = round(mem.total / (1024 ** 3), 2)`
+    - `ram_percent = float(mem.percent)`
+    - Retorna `{"cpu_percent": cpu_percent, "ram_used_gb": ram_used_gb, "ram_total_gb": ram_total_gb, "ram_percent": ram_percent}`
+
+### 3. Ciclo TDD
+- Criar `tests/test_log_service.py` e `tests/test_metrics_service.py`.
+- Rodar `.venv\Scripts\python.exe -m pytest tests/test_log_service.py tests/test_metrics_service.py -v` (confirmar falha).
+- Implementar `backend/services/log_service.py` e `backend/services/metrics_service.py`.
+- Executar testes novamente até 100% verde.
+- Executar toda a suíte de testes (`.venv\Scripts\python.exe -m pytest tests/ -v`) para garantir zero regressões.
+- Fazer commit git: `feat(services): implement log buffer handler and system metrics collector`.
