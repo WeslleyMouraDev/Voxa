@@ -29,6 +29,7 @@ def test_root_serves_index_html(client):
         "/js/state.js",
         "/js/components/toast.js",
         "/js/components/modal.js",
+        "/js/components/log-drawer.js",
         "/js/pages/narrate.js",
         "/js/pages/voices.js",
         "/js/pages/history.js",
@@ -56,3 +57,33 @@ def test_index_html_has_expected_references(client):
     assert "#voices" in html
     assert "#history" in html
     assert "#settings" in html
+
+
+def test_index_html_has_log_drawer_elements(client):
+    """Testa se o index.html contém os elementos do botão flutuante e do drawer de logs."""
+    response = client.get("/")
+    assert response.status_code == 200
+    html = response.text
+
+    assert 'id="btn-toggle-logs"' in html
+    assert 'id="log-error-badge"' in html
+    assert 'id="log-drawer"' in html
+    assert 'id="log-drawer-resize-handle"' in html
+    assert 'id="metric-cpu"' in html
+    assert 'id="metric-ram"' in html
+    assert 'id="log-level-filter"' in html
+    assert 'id="log-search-input"' in html
+    assert 'id="btn-autoscroll"' in html
+    assert 'id="btn-clear-logs"' in html
+    assert 'id="btn-close-drawer"' in html
+    assert 'id="log-entries-container"' in html
+
+
+def test_app_js_initializes_log_drawer(client):
+    """Testa se app.js importa e inicializa o componente log-drawer."""
+    response = client.get("/js/app.js")
+    assert response.status_code == 200
+    js_text = response.text
+    assert "log-drawer" in js_text
+    assert "initLogDrawer" in js_text
+

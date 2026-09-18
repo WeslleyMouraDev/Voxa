@@ -9,6 +9,7 @@ import { renderNarratePage } from './pages/narrate.js';
 import { renderVoicesPage } from './pages/voices.js';
 import { renderHistoryPage } from './pages/history.js';
 import { renderSettingsPage } from './pages/settings.js';
+import { initLogDrawer } from './components/log-drawer.js';
 
 const routes = {
   narrate: renderNarratePage,
@@ -21,6 +22,10 @@ async function init() {
   const contentArea = document.getElementById('main-content');
   const statusDot = document.getElementById('system-status-dot');
   const statusVal = document.getElementById('system-status-val');
+
+  // Inicializa o painel deslizante de logs em tempo real (DevTools drawer)
+  initLogDrawer();
+
 
   // Inscreve observador para o status de processamento no rodapé da sidebar
   stateManager.subscribe((state) => {

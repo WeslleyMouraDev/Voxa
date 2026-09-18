@@ -69,6 +69,43 @@
     </main>
   </div>
 
+  <!-- Botão Flutuante de Toggle do Terminal/Logs -->
+  <button id="btn-toggle-logs" class="btn-toggle-logs" title="Abrir painel de logs e terminal em tempo real">
+    <span class="log-icon">🖥️</span>
+    <span class="log-btn-text">Terminal</span>
+    <span id="log-error-badge" class="log-error-badge hidden">0</span>
+  </button>
+
+  <!-- Drawer DevTools de Logs e Telemetria -->
+  <div id="log-drawer" class="log-drawer collapsed">
+    <div class="log-drawer-resize-handle" id="log-drawer-resize-handle"></div>
+    <div class="log-drawer-header">
+      <div class="log-header-title">
+        <span>⚡ Terminal em Tempo Real</span>
+        <div class="metrics-badges">
+          <span class="metric-badge" id="metric-cpu">CPU: --%</span>
+          <span class="metric-badge" id="metric-ram">RAM: -- GB (--%)</span>
+        </div>
+      </div>
+      <div class="log-header-controls">
+        <select id="log-level-filter" class="log-select">
+          <option value="">Todos os Níveis</option>
+          <option value="INFO">INFO</option>
+          <option value="WARNING">WARNING</option>
+          <option value="ERROR">ERROR</option>
+          <option value="DEBUG">DEBUG</option>
+        </select>
+        <input type="text" id="log-search-input" class="log-search" placeholder="Filtrar logs..." />
+        <button id="btn-autoscroll" class="log-ctrl-btn active" title="Pausar / Retomar Auto-Scroll">⬇ Auto-Scroll</button>
+        <button id="btn-clear-logs" class="log-ctrl-btn" title="Limpar logs">🗑️ Limpar</button>
+        <button id="btn-close-drawer" class="log-ctrl-btn close-btn" title="Minimizar painel">✕</button>
+      </div>
+    </div>
+    <div class="log-drawer-body" id="log-entries-container">
+      <!-- Linhas de logs injetadas dinamicamente -->
+    </div>
+  </div>
+
   <!-- Container Global de Toasts -->
   <div id="toast-container"></div>
 
@@ -76,3 +113,4 @@
   <script type="module" src="/js/app.js"></script>
 </body>
 </html>
+
