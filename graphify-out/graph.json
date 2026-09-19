@@ -99,7 +99,7 @@
       "source_file": "backend/models/enums.py",
       "source_location": "L1",
       "id": "backend_models_enums_py",
-      "community": 28,
+      "community": 71,
       "norm_label": "enums.py"
     },
     {
@@ -108,7 +108,7 @@
       "source_file": "backend/models/enums.py",
       "source_location": "L4",
       "id": "models_enums_transcriptionmode",
-      "community": 28,
+      "community": 71,
       "norm_label": "transcriptionmode"
     },
     {
@@ -126,7 +126,7 @@
       "source_file": "",
       "source_location": "",
       "id": "enum",
-      "community": 28,
+      "community": 71,
       "norm_label": "enum"
     },
     {
@@ -135,7 +135,7 @@
       "source_file": "backend/models/enums.py",
       "source_location": "L10",
       "id": "models_enums_taskstatus",
-      "community": 28,
+      "community": 71,
       "norm_label": "taskstatus"
     },
     {
@@ -180,7 +180,7 @@
       "source_file": "backend/models/schemas.py",
       "source_location": "L22",
       "id": "models_schemas_settingsschema",
-      "community": 0,
+      "community": 71,
       "norm_label": "settingsschema"
     },
     {
@@ -1089,7 +1089,7 @@
       "source_file": "backend/services/srt_builder.py",
       "source_location": "L1",
       "id": "backend_services_srt_builder_py",
-      "community": 28,
+      "community": 71,
       "norm_label": "srt_builder.py"
     },
     {
@@ -1107,7 +1107,7 @@
       "source_file": "backend/services/srt_builder.py",
       "source_location": "L19",
       "id": "services_srt_builder_srtsegment",
-      "community": 28,
+      "community": 71,
       "norm_label": "srtsegment"
     },
     {
@@ -1116,7 +1116,7 @@
       "source_file": "backend/services/srt_builder.py",
       "source_location": "L33",
       "id": "services_srt_builder_srtbuilder",
-      "community": 28,
+      "community": 71,
       "norm_label": "srtbuilder"
     },
     {
@@ -1125,7 +1125,7 @@
       "source_file": "backend/services/srt_builder.py",
       "source_location": "L35",
       "id": "services_srt_builder_format_timestamp",
-      "community": 28,
+      "community": 71,
       "norm_label": "format_timestamp()"
     },
     {
@@ -1134,7 +1134,7 @@
       "source_file": "backend/services/srt_builder.py",
       "source_location": "L45",
       "id": "services_srt_builder_build_segments",
-      "community": 28,
+      "community": 71,
       "norm_label": "build_segments()"
     },
     {
@@ -1143,7 +1143,7 @@
       "source_file": "backend/services/srt_builder.py",
       "source_location": "L104",
       "id": "services_srt_builder_build_srt",
-      "community": 28,
+      "community": 71,
       "norm_label": "build_srt()"
     },
     {
@@ -1152,7 +1152,7 @@
       "source_file": "backend/services/srt_builder.py",
       "source_location": "L127",
       "id": "services_srt_builder_save_srt_file",
-      "community": 28,
+      "community": 71,
       "norm_label": "save_srt_file()"
     },
     {
@@ -2727,7 +2727,7 @@
       "source_file": "tests/test_api.py",
       "source_location": "L197",
       "id": "tests_test_api_test_history_list_and_delete",
-      "community": 71,
+      "community": 6,
       "norm_label": "test_history_list_and_delete()"
     },
     {
@@ -2736,7 +2736,7 @@
       "source_file": "tests/test_api.py",
       "source_location": "L234",
       "id": "tests_test_api_test_clear_all_history",
-      "community": 71,
+      "community": 6,
       "norm_label": "test_clear_all_history()"
     },
     {
@@ -2799,7 +2799,7 @@
       "source_file": "tests/test_api.py",
       "source_location": "L376",
       "id": "tests_test_api_test_transcribe_with_file_upload_success",
-      "community": 6,
+      "community": 28,
       "norm_label": "test_transcribe_with_file_upload_success()"
     },
     {
@@ -2815,7 +2815,7 @@
       "label": "test_progress_sse_stream()",
       "file_type": "code",
       "source_file": "tests/test_api.py",
-      "source_location": "L411",
+      "source_location": "L415",
       "id": "tests_test_api_test_progress_sse_stream",
       "community": 6,
       "norm_label": "test_progress_sse_stream()"
@@ -2824,7 +2824,7 @@
       "label": "test_static_files_serving()",
       "file_type": "code",
       "source_file": "tests/test_api.py",
-      "source_location": "L430",
+      "source_location": "L434",
       "id": "tests_test_api_test_static_files_serving",
       "community": 6,
       "norm_label": "test_static_files_serving()"
@@ -3654,7 +3654,7 @@
       "source_file": "tests/test_services.py",
       "source_location": "L94",
       "id": "tests_test_services_test_tts_generate_speech_success",
-      "community": 28,
+      "community": 66,
       "norm_label": "test_tts_generate_speech_success()"
     },
     {
@@ -3663,7 +3663,7 @@
       "source_file": "tests/test_services.py",
       "source_location": "L137",
       "id": "tests_test_services_test_tts_generate_speech_multiple_chunks",
-      "community": 28,
+      "community": 66,
       "norm_label": "test_tts_generate_speech_multiple_chunks()"
     },
     {
@@ -3807,7 +3807,7 @@
       "source_file": "tests/test_services.py",
       "source_location": "L95",
       "id": "tests_test_services_rationale_95",
-      "community": 28,
+      "community": 66,
       "norm_label": "gera audio mp3 com modelo mockado e verifica progresso e saida."
     },
     {
@@ -3816,7 +3816,7 @@
       "source_file": "tests/test_services.py",
       "source_location": "L138",
       "id": "tests_test_services_rationale_138",
-      "community": 28,
+      "community": 66,
       "norm_label": "testa sintetizacao com multiplos chunks e concatenacao."
     },
     {
@@ -4014,7 +4014,7 @@
       "source_file": "tests/test_storage.py",
       "source_location": "L98",
       "id": "tests_test_storage_test_settings_store_lifecycle",
-      "community": 0,
+      "community": 71,
       "norm_label": "test_settings_store_lifecycle()"
     },
     {
@@ -5674,49 +5674,76 @@
       "norm_label": "task-7-report.md"
     },
     {
-      "label": "Relat\u00f3rio de Conclus\u00e3o \u2014 Tarefa 7",
+      "label": "Relat\u00f3rio da Task 7: Valida\u00e7\u00e3o Completa de Regress\u00e3o e Atualiza\u00e7\u00e3o do Conhecimento",
       "file_type": "document",
       "source_file": ".superpowers/sdd/task-7-report.md",
       "source_location": "L1",
-      "id": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
+      "id": "sdd_task_7_report_relat\u00f3rio_da_task_7_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
       "community": 48,
-      "norm_label": "relatorio de conclusao \u2014 tarefa 7"
+      "norm_label": "relatorio da task 7: validacao completa de regressao e atualizacao do conhecimento"
     },
     {
-      "label": "Objetivo",
+      "label": "Vis\u00e3o Geral",
       "file_type": "document",
       "source_file": ".superpowers/sdd/task-7-report.md",
       "source_location": "L3",
-      "id": "sdd_task_7_report_objetivo",
+      "id": "sdd_task_7_report_vis\u00e3o_geral",
       "community": 48,
-      "norm_label": "objetivo"
+      "norm_label": "visao geral"
     },
     {
-      "label": "Arquivos Criados / Modificados",
+      "label": "Valida\u00e7\u00f5es e Execu\u00e7\u00f5es Realizadas",
       "file_type": "document",
       "source_file": ".superpowers/sdd/task-7-report.md",
-      "source_location": "L6",
-      "id": "sdd_task_7_report_arquivos_criados_modificados",
+      "source_location": "L8",
+      "id": "sdd_task_7_report_valida\u00e7\u00f5es_e_execu\u00e7\u00f5es_realizadas",
       "community": 48,
-      "norm_label": "arquivos criados / modificados"
+      "norm_label": "validacoes e execucoes realizadas"
     },
     {
-      "label": "Ciclo TDD e Resultados de Valida\u00e7\u00e3o",
+      "label": "1. Su\u00edte Completa de Testes Automatizados (100% de Sucesso)",
       "file_type": "document",
       "source_file": ".superpowers/sdd/task-7-report.md",
-      "source_location": "L16",
-      "id": "sdd_task_7_report_ciclo_tdd_e_resultados_de_valida\u00e7\u00e3o",
+      "source_location": "L10",
+      "id": "sdd_task_7_report_1_su\u00edte_completa_de_testes_automatizados_100_de_sucesso",
       "community": 48,
-      "norm_label": "ciclo tdd e resultados de validacao"
+      "norm_label": "1. suite completa de testes automatizados (100% de sucesso)"
     },
     {
-      "label": "Status",
+      "label": "2. Atualiza\u00e7\u00e3o Premium do README.md",
       "file_type": "document",
       "source_file": ".superpowers/sdd/task-7-report.md",
-      "source_location": "L21",
-      "id": "sdd_task_7_report_status",
+      "source_location": "L27",
+      "id": "sdd_task_7_report_2_atualiza\u00e7\u00e3o_premium_do_readme_md",
       "community": 48,
-      "norm_label": "status"
+      "norm_label": "2. atualizacao premium do readme.md"
+    },
+    {
+      "label": "3. Sincroniza\u00e7\u00e3o do Grafo de Conhecimento (Graphify)",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L36",
+      "id": "sdd_task_7_report_3_sincroniza\u00e7\u00e3o_do_grafo_de_conhecimento_graphify",
+      "community": 48,
+      "norm_label": "3. sincronizacao do grafo de conhecimento (graphify)"
+    },
+    {
+      "label": "Commits",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L41",
+      "id": "sdd_task_7_report_commits",
+      "community": 48,
+      "norm_label": "commits"
+    },
+    {
+      "label": "Conclus\u00e3o",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L44",
+      "id": "sdd_task_7_report_conclus\u00e3o",
+      "community": 48,
+      "norm_label": "conclusao"
     },
     {
       "label": "2026-09-17-voxa-implementation-plan.md",
@@ -6338,6 +6365,51 @@
       "id": "specs_2026_09_18_logs_panel_api_design_depend\u00eancias_novas",
       "community": 62,
       "norm_label": "dependencias novas"
+    },
+    {
+      "label": "Relat\u00f3rio de Conclus\u00e3o \u2014 Tarefa 7",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L1",
+      "community": 48,
+      "norm_label": "relatorio de conclusao \u2014 tarefa 7",
+      "id": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7"
+    },
+    {
+      "label": "Objetivo",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L3",
+      "community": 48,
+      "norm_label": "objetivo",
+      "id": "sdd_task_7_report_objetivo"
+    },
+    {
+      "label": "Arquivos Criados / Modificados",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L6",
+      "community": 48,
+      "norm_label": "arquivos criados / modificados",
+      "id": "sdd_task_7_report_arquivos_criados_modificados"
+    },
+    {
+      "label": "Ciclo TDD e Resultados de Valida\u00e7\u00e3o",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L16",
+      "community": 48,
+      "norm_label": "ciclo tdd e resultados de validacao",
+      "id": "sdd_task_7_report_ciclo_tdd_e_resultados_de_valida\u00e7\u00e3o"
+    },
+    {
+      "label": "Status",
+      "file_type": "document",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L21",
+      "community": 48,
+      "norm_label": "status",
+      "id": "sdd_task_7_report_status"
     },
     {
       "label": "\ud83d\udce1 Endpoints da API",
@@ -14852,9 +14924,9 @@
       "source_file": "README.md",
       "source_location": "L71",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_voxa",
-      "target": "voxa_readme_controles_avan\u00e7ados_de_voz",
-      "confidence_score": 1.0
+      "target": "voxa_readme_controles_avan\u00e7ados_de_voz"
     },
     {
       "relation": "contains",
@@ -14872,9 +14944,9 @@
       "source_file": "README.md",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_voxa",
-      "target": "voxa_readme_painel_de_logs_telemetria_em_tempo_real",
-      "confidence_score": 1.0
+      "target": "voxa_readme_painel_de_logs_telemetria_em_tempo_real"
     },
     {
       "relation": "contains",
@@ -14912,9 +14984,9 @@
       "source_file": "README.md",
       "source_location": "L222",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_voxa",
-      "target": "voxa_readme_api_rest_documenta\u00e7\u00e3o_interativa",
-      "confidence_score": 1.0
+      "target": "voxa_readme_api_rest_documenta\u00e7\u00e3o_interativa"
     },
     {
       "relation": "contains",
@@ -15012,9 +15084,9 @@
       "source_file": "README.md",
       "source_location": "L82",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_controles_avan\u00e7ados_de_voz",
-      "target": "voxa_readme_presets_r\u00e1pidos_com_1_clique",
-      "confidence_score": 1.0
+      "target": "voxa_readme_presets_r\u00e1pidos_com_1_clique"
     },
     {
       "relation": "contains",
@@ -15022,9 +15094,9 @@
       "source_file": "README.md",
       "source_location": "L108",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_painel_de_logs_telemetria_em_tempo_real",
-      "target": "voxa_readme_codeblock_1",
-      "confidence_score": 1.0
+      "target": "voxa_readme_codeblock_1"
     },
     {
       "relation": "contains",
@@ -15092,9 +15164,9 @@
       "source_file": "README.md",
       "source_location": "L160",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_no_windows",
-      "target": "voxa_readme_codeblock_4",
-      "confidence_score": 1.0
+      "target": "voxa_readme_codeblock_4"
     },
     {
       "relation": "contains",
@@ -15162,9 +15234,9 @@
       "source_file": "README.md",
       "source_location": "L182",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_no_linux_ou_macos",
-      "target": "voxa_readme_codeblock_7",
-      "confidence_score": 1.0
+      "target": "voxa_readme_codeblock_7"
     },
     {
       "relation": "contains",
@@ -15202,9 +15274,9 @@
       "source_file": "README.md",
       "source_location": "L192",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_interface_web_dark_premium",
-      "target": "voxa_readme_codeblock_8",
-      "confidence_score": 1.0
+      "target": "voxa_readme_codeblock_8"
     },
     {
       "relation": "contains",
@@ -15222,9 +15294,9 @@
       "source_file": "README.md",
       "source_location": "L230",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_api_rest_documenta\u00e7\u00e3o_interativa",
-      "target": "voxa_readme_tabela_de_endpoints",
-      "confidence_score": 1.0
+      "target": "voxa_readme_tabela_de_endpoints"
     },
     {
       "relation": "contains",
@@ -15232,9 +15304,9 @@
       "source_file": "README.md",
       "source_location": "L256",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_estrutura_do_projeto",
-      "target": "voxa_readme_codeblock_9",
-      "confidence_score": 1.0
+      "target": "voxa_readme_codeblock_9"
     },
     {
       "relation": "contains",
@@ -15262,9 +15334,9 @@
       "source_file": "README.md",
       "source_location": "L324",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "voxa_readme_testes_automatizados",
-      "target": "voxa_readme_codeblock_11",
-      "confidence_score": 1.0
+      "target": "voxa_readme_codeblock_11"
     },
     {
       "relation": "contains",
@@ -16452,9 +16524,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "superpowers_sdd_task_6_report_md",
-      "target": "sdd_task_6_report_relat\u00f3rio_da_task_6_interface_web_controles_de_gera\u00e7\u00e3o_accordion_e_p\u00e1gina_api_docs",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_relat\u00f3rio_da_task_6_interface_web_controles_de_gera\u00e7\u00e3o_accordion_e_p\u00e1gina_api_docs"
     },
     {
       "relation": "contains",
@@ -16472,9 +16544,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_relat\u00f3rio_da_task_6_interface_web_controles_de_gera\u00e7\u00e3o_accordion_e_p\u00e1gina_api_docs",
-      "target": "sdd_task_6_report_vis\u00e3o_geral",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_vis\u00e3o_geral"
     },
     {
       "relation": "contains",
@@ -16482,9 +16554,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_relat\u00f3rio_da_task_6_interface_web_controles_de_gera\u00e7\u00e3o_accordion_e_p\u00e1gina_api_docs",
-      "target": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas"
     },
     {
       "relation": "contains",
@@ -16492,9 +16564,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_relat\u00f3rio_da_task_6_interface_web_controles_de_gera\u00e7\u00e3o_accordion_e_p\u00e1gina_api_docs",
-      "target": "sdd_task_6_report_ciclo_tdd_e_verifica\u00e7\u00e3o",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_ciclo_tdd_e_verifica\u00e7\u00e3o"
     },
     {
       "relation": "contains",
@@ -16502,9 +16574,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_relat\u00f3rio_da_task_6_interface_web_controles_de_gera\u00e7\u00e3o_accordion_e_p\u00e1gina_api_docs",
-      "target": "sdd_task_6_report_preocupa\u00e7\u00f5es_observa\u00e7\u00f5es",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_preocupa\u00e7\u00f5es_observa\u00e7\u00f5es"
     },
     {
       "relation": "contains",
@@ -16512,9 +16584,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas",
-      "target": "sdd_task_6_report_1_frontend_js_pages_narrate_js",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_1_frontend_js_pages_narrate_js"
     },
     {
       "relation": "contains",
@@ -16522,9 +16594,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas",
-      "target": "sdd_task_6_report_2_frontend_js_api_js",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_2_frontend_js_api_js"
     },
     {
       "relation": "contains",
@@ -16532,9 +16604,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas",
-      "target": "sdd_task_6_report_3_frontend_js_pages_api_docs_js_novo",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_3_frontend_js_pages_api_docs_js_novo"
     },
     {
       "relation": "contains",
@@ -16542,9 +16614,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas",
-      "target": "sdd_task_6_report_4_frontend_js_app_js_e_frontend_index_html",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_4_frontend_js_app_js_e_frontend_index_html"
     },
     {
       "relation": "contains",
@@ -16552,9 +16624,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas",
-      "target": "sdd_task_6_report_5_frontend_css_style_css",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_5_frontend_css_style_css"
     },
     {
       "relation": "contains",
@@ -16562,9 +16634,9 @@
       "source_file": ".superpowers/sdd/task-6-report.md",
       "source_location": "L46",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_6_report_altera\u00e7\u00f5es_realizadas",
-      "target": "sdd_task_6_report_6_tests_test_frontend_py",
-      "confidence_score": 1.0
+      "target": "sdd_task_6_report_6_tests_test_frontend_py"
     },
     {
       "relation": "contains",
@@ -16572,9 +16644,9 @@
       "source_file": ".superpowers/sdd/task-7-brief.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "superpowers_sdd_task_7_brief_md",
-      "target": "sdd_task_7_brief_task_7_brief_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
-      "confidence_score": 1.0
+      "target": "sdd_task_7_brief_task_7_brief_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento"
     },
     {
       "relation": "contains",
@@ -16592,9 +16664,9 @@
       "source_file": ".superpowers/sdd/task-7-brief.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_7_brief_task_7_brief_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
-      "target": "sdd_task_7_brief_objetivo",
-      "confidence_score": 1.0
+      "target": "sdd_task_7_brief_objetivo"
     },
     {
       "relation": "contains",
@@ -16602,9 +16674,9 @@
       "source_file": ".superpowers/sdd/task-7-brief.md",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_7_brief_task_7_brief_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
-      "target": "sdd_task_7_brief_arquivos_a_modificar",
-      "confidence_score": 1.0
+      "target": "sdd_task_7_brief_arquivos_a_modificar"
     },
     {
       "relation": "contains",
@@ -16612,9 +16684,9 @@
       "source_file": ".superpowers/sdd/task-7-brief.md",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "sdd_task_7_brief_task_7_brief_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
-      "target": "sdd_task_7_brief_comandos_a_executar",
-      "confidence_score": 1.0
+      "target": "sdd_task_7_brief_comandos_a_executar"
     },
     {
       "relation": "contains",
@@ -16632,6 +16704,16 @@
       "source_file": ".superpowers/sdd/task-7-report.md",
       "source_location": "L1",
       "weight": 1.0,
+      "source": "superpowers_sdd_task_7_report_md",
+      "target": "sdd_task_7_report_relat\u00f3rio_da_task_7_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L1",
+      "weight": 1.0,
       "confidence_score": 1.0,
       "source": "superpowers_sdd_task_7_report_md",
       "target": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7"
@@ -16642,39 +16724,69 @@
       "source_file": ".superpowers/sdd/task-7-report.md",
       "source_location": "L3",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
-      "target": "sdd_task_7_report_objetivo"
+      "source": "sdd_task_7_report_relat\u00f3rio_da_task_7_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
+      "target": "sdd_task_7_report_vis\u00e3o_geral",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".superpowers/sdd/task-7-report.md",
-      "source_location": "L6",
+      "source_location": "L8",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
-      "target": "sdd_task_7_report_arquivos_criados_modificados"
+      "source": "sdd_task_7_report_relat\u00f3rio_da_task_7_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
+      "target": "sdd_task_7_report_valida\u00e7\u00f5es_e_execu\u00e7\u00f5es_realizadas",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".superpowers/sdd/task-7-report.md",
-      "source_location": "L16",
+      "source_location": "L41",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
-      "target": "sdd_task_7_report_ciclo_tdd_e_resultados_de_valida\u00e7\u00e3o"
+      "source": "sdd_task_7_report_relat\u00f3rio_da_task_7_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
+      "target": "sdd_task_7_report_commits",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": ".superpowers/sdd/task-7-report.md",
-      "source_location": "L21",
+      "source_location": "L44",
       "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
-      "target": "sdd_task_7_report_status"
+      "source": "sdd_task_7_report_relat\u00f3rio_da_task_7_valida\u00e7\u00e3o_completa_de_regress\u00e3o_e_atualiza\u00e7\u00e3o_do_conhecimento",
+      "target": "sdd_task_7_report_conclus\u00e3o",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "sdd_task_7_report_valida\u00e7\u00f5es_e_execu\u00e7\u00f5es_realizadas",
+      "target": "sdd_task_7_report_1_su\u00edte_completa_de_testes_automatizados_100_de_sucesso",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "sdd_task_7_report_valida\u00e7\u00f5es_e_execu\u00e7\u00f5es_realizadas",
+      "target": "sdd_task_7_report_2_atualiza\u00e7\u00e3o_premium_do_readme_md",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L36",
+      "weight": 1.0,
+      "source": "sdd_task_7_report_valida\u00e7\u00f5es_e_execu\u00e7\u00f5es_realizadas",
+      "target": "sdd_task_7_report_3_sincroniza\u00e7\u00e3o_do_grafo_de_conhecimento_graphify",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -17325,6 +17437,46 @@
       "confidence_score": 1.0,
       "source": "specs_2026_09_18_logs_panel_api_design_mensagens_client_server",
       "target": "specs_2026_09_18_logs_panel_api_design_codeblock_3"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
+      "target": "sdd_task_7_report_objetivo"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
+      "target": "sdd_task_7_report_arquivos_criados_modificados"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
+      "target": "sdd_task_7_report_ciclo_tdd_e_resultados_de_valida\u00e7\u00e3o"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": ".superpowers/sdd/task-7-report.md",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "sdd_task_7_report_relat\u00f3rio_de_conclus\u00e3o_tarefa_7",
+      "target": "sdd_task_7_report_status"
     },
     {
       "relation": "contains",
@@ -18088,5 +18240,5 @@
     }
   ],
   "hyperedges": [],
-  "built_at_commit": "98f846f575fb71202ed55f9183f67380e3ece04c"
+  "built_at_commit": "ad7e87578f8bf44b4c13ab18dd73f8099f0abce1"
 }

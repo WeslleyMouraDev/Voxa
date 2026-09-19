@@ -405,7 +405,11 @@ def test_transcribe_with_file_upload_success(test_env):
 def test_progress_not_found(test_env):
     client = test_env["client"]
     res = client.get("/api/progress/non-existent-task-id")
-    assert res.status_code == 404
+    assert res.status_code == 200
+    assert "text/event-stream" in res.headers["content-type"]
+    assert "error" in res.text
+    assert "não encontrada ou expirada" in res.text
+
 
 
 def test_progress_sse_stream(test_env):

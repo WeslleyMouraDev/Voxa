@@ -1,16 +1,16 @@
-# Graph Report - Voxa  (2026-09-18)
+# Graph Report - Voxa  (2026-09-19)
 
 ## Corpus Check
-- 80 files · ~109,698 words
+- 80 files · ~61,365 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 822 nodes · 1043 edges · 71 communities (44 shown, 27 thin omitted)
+- 830 nodes · 1051 edges · 71 communities (44 shown, 27 thin omitted)
 - Extraction: 85% EXTRACTED · 15% INFERRED · 0% AMBIGUOUS · INFERRED: 159 edges (avg confidence: 0.73)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `98f846f5`
+- Built from commit: `ad7e8757`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -90,22 +90,22 @@
 10. `CPULimiter` - 14 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `test_transcribe_with_file_upload_success()` --calls--> `WordTimestamp`  [INFERRED]
-  tests/test_api.py → backend/services/srt_builder.py
 - `client()` --calls--> `create_app()`  [INFERRED]
   tests/test_frontend.py → backend/main.py
-- `test_schemas_defaults_and_validation()` --calls--> `SettingsSchema`  [INFERRED]
-  tests/test_storage.py → backend/models/schemas.py
-- `test_history_item_schema_controls_defaults()` --calls--> `HistoryItemSchema`  [INFERRED]
-  tests/test_schemas_controls.py → backend/models/schemas.py
-- `test_history_item_schema_controls_custom()` --calls--> `HistoryItemSchema`  [INFERRED]
-  tests/test_schemas_controls.py → backend/models/schemas.py
+- `MockWord` --uses--> `TranscriptionMode`  [INFERRED]
+  tests/test_services.py → backend/models/enums.py
+- `MockSegment` --uses--> `TranscriptionMode`  [INFERRED]
+  tests/test_services.py → backend/models/enums.py
+- `MockTranscriptionInfo` --uses--> `TranscriptionMode`  [INFERRED]
+  tests/test_services.py → backend/models/enums.py
+- `test_history_list_and_delete()` --calls--> `HistoryItemSchema`  [INFERRED]
+  tests/test_api.py → backend/models/schemas.py
 
 ## Communities (71 total, 27 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.07
-Nodes (18): SettingsSchema, VoiceSchema, HistoryStore, JSONStore, Thread-safe and atomic JSON storage handler., Reads JSON data safely under lock. Returns `default` on missing or corrupt file., Atomically writes data into the JSON file using a temp file and os.replace., SettingsStore (+10 more)
+Nodes (16): VoiceSchema, HistoryStore, JSONStore, Thread-safe and atomic JSON storage handler., Reads JSON data safely under lock. Returns `default` on missing or corrupt file., Atomically writes data into the JSON file using a temp file and os.replace., SettingsStore, VoiceStore (+8 more)
 
 ### Community 1 - "Community 1"
 Cohesion: 0.12
@@ -129,7 +129,7 @@ Nodes (16): Marca a tarefa com erro, notificando os ouvintes., Gerenciador assí
 
 ### Community 6 - "Community 6"
 Cohesion: 0.06
-Nodes (20): Inicia tarefa de transcrição a partir de upload de arquivo ou caminho de áudio e, _run_transcription_task(), transcribe(), create_voice(), delete_voice(), list_voices(), Lista todas as vozes cadastradas., Cadastra uma nova voz a partir do upload de um arquivo de áudio de amostra. (+12 more)
+Nodes (21): Inicia tarefa de transcrição a partir de upload de arquivo ou caminho de áudio e, _run_transcription_task(), transcribe(), create_voice(), delete_voice(), list_voices(), Lista todas as vozes cadastradas., Cadastra uma nova voz a partir do upload de um arquivo de áudio de amostra. (+13 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.29
@@ -164,8 +164,8 @@ Cohesion: 0.14
 Nodes (13): 1. `backend/services/log_service.py` (Novo), 1. Implementações Realizadas, 2. `backend/services/metrics_service.py` (Novo), 2. Testes e Validação TDD, 3. `tests/test_log_service.py` (Novo), 4. `tests/test_metrics_service.py` (Novo), Alterações Realizadas, Ciclo TDD e Verificação (+5 more)
 
 ### Community 28 - "Community 28"
-Cohesion: 0.05
-Nodes (47): Enum, TaskStatus, TranscriptionMode, build_segments(), build_srt(), format_timestamp(), SRTBuilder, SRTSegment (+39 more)
+Cohesion: 0.07
+Nodes (36): WordTimestamp, Serviço de transcrição de áudio usando Faster Whisper com suporte     a timestam, Carrega o modelo Whisper sob demanda caso não fornecido na inicialização., Transcreve um arquivo de áudio para PT-BR com timestamps por palavra:         -, STTService, test_transcribe_with_file_upload_success(), MockSegment, MockTranscriptionInfo (+28 more)
 
 ### Community 29 - "Community 29"
 Cohesion: 0.1
@@ -216,8 +216,8 @@ Cohesion: 0.12
 Nodes (16): 1. `setup.bat` (Windows Installer), 2. `start.bat` (Windows Launcher), 3. `setup.sh` e `start.sh` (Linux / macOS), 4. `requirements.txt`, 5. `.gitignore`, 6. `README.md`, Arquivos a Criar, Arquivos a Modificar (+8 more)
 
 ### Community 48 - "Community 48"
-Cohesion: 0.33
-Nodes (5): Arquivos Criados / Modificados, Ciclo TDD e Resultados de Validação, Objetivo, Relatório de Conclusão — Tarefa 7, Status
+Cohesion: 0.14
+Nodes (13): 1. Suíte Completa de Testes Automatizados (100% de Sucesso), 2. Atualização Premium do README.md, 3. Sincronização do Grafo de Conhecimento (Graphify), Arquivos Criados / Modificados, Ciclo TDD e Resultados de Validação, Commits, Conclusão, Objetivo (+5 more)
 
 ### Community 52 - "Community 52"
 Cohesion: 0.07
@@ -232,25 +232,25 @@ Cohesion: 0.09
 Nodes (21): code:python (import pytest), code:bash (git add frontend/index.html frontend/css/style.css frontend/), code:bash (git add frontend/js/pages/narrate.js frontend/js/pages/api-d), code:bash (git add README.md graphify-out/), code:bash (git add backend/models/schemas.py tests/test_schemas_control), code:python (import logging), code:python (from backend.services.metrics_service import MetricsService), code:bash (git add backend/services/log_service.py backend/services/met) (+13 more)
 
 ### Community 66 - "Community 66"
-Cohesion: 0.07
-Nodes (34): _invoke_tts_generate(), narrate(), narrate_and_transcribe(), Inicia tarefa de narração em background a partir de um texto e voz selecionada., Inicia tarefa em background que sintetiza voz e transcreve com legendas SRT dinâ, Inicia tarefa de narração em background a partir de um texto e voz selecionada,, Inicia tarefa em background que sintetiza voz com controles dinâmicos e transcre, Invoca tts.generate_speech filtrando kwargs caso o alvo seja um mock antigo sem (+26 more)
+Cohesion: 0.06
+Nodes (38): _invoke_tts_generate(), narrate(), narrate_and_transcribe(), Inicia tarefa de narração em background a partir de um texto e voz selecionada., Inicia tarefa em background que sintetiza voz e transcreve com legendas SRT dinâ, Inicia tarefa de narração em background a partir de um texto e voz selecionada,, Inicia tarefa em background que sintetiza voz com controles dinâmicos e transcre, Invoca tts.generate_speech filtrando kwargs caso o alvo seja um mock antigo sem (+30 more)
 
 ### Community 71 - "Community 71"
-Cohesion: 0.13
-Nodes (21): BaseModel, get_default_transcription_modes(), HistoryItemSchema, LogEntrySchema, ModeConfig, NarrationAndTranscriptionRequestSchema, NarrationRequestSchema, SystemMetricsSchema (+13 more)
+Cohesion: 0.1
+Nodes (29): BaseModel, Enum, TaskStatus, TranscriptionMode, get_default_transcription_modes(), HistoryItemSchema, LogEntrySchema, ModeConfig (+21 more)
 
 ## Knowledge Gaps
-- **337 isolated node(s):** `Anexa o LogBufferHandler aos loggers raiz do Python e do uvicorn para streaming.`, `Cria e configura a instância da aplicação FastAPI do Voxa.`, `Voxa backend package.`, `Retorna o histórico ordenado de gerações realizadas.`, `Exclui um item do histórico e remove os arquivos de áudio e legenda do disco.` (+332 more)
+- **343 isolated node(s):** `Anexa o LogBufferHandler aos loggers raiz do Python e do uvicorn para streaming.`, `Cria e configura a instância da aplicação FastAPI do Voxa.`, `Voxa backend package.`, `Retorna o histórico ordenado de gerações realizadas.`, `Exclui um item do histórico e remove os arquivos de áudio e legenda do disco.` (+338 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **27 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `TranscriptionMode` connect `Community 28` to `Community 0`, `Community 6`, `Community 71`?**
-  _High betweenness centrality (0.051) - this node is a cross-community bridge._
+- **Why does `TranscriptionMode` connect `Community 71` to `Community 0`, `Community 28`, `Community 6`?**
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Why does `create_app()` connect `Community 21` to `Community 6`?**
-  _High betweenness centrality (0.043) - this node is a cross-community bridge._
+  _High betweenness centrality (0.042) - this node is a cross-community bridge._
 - **Are the 24 inferred relationships involving `str` (e.g. with `create_app()` and `_run_narration_task()`) actually correct?**
   _`str` has 24 INFERRED edges - model-reasoned connections that need verification._
 - **Are the 11 inferred relationships involving `LogService` (e.g. with `test_log_service_ring_buffer()` and `test_log_service_entry_structure()`) actually correct?**
@@ -260,4 +260,4 @@ _Questions this graph is uniquely positioned to answer:_
 - **Are the 10 inferred relationships involving `TaskManager` (e.g. with `TaskStatus` and `test_env()`) actually correct?**
   _`TaskManager` has 10 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `Anexa o LogBufferHandler aos loggers raiz do Python e do uvicorn para streaming.`, `Cria e configura a instância da aplicação FastAPI do Voxa.`, `Voxa backend package.` to the rest of the system?**
-  _337 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _343 weakly-connected nodes found - possible documentation gaps or missing edges._

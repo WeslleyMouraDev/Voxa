@@ -16,7 +16,28 @@ async def get_progress(task_id: str) -> StreamingResponse:
     """
     task = task_manager.get_task(task_id)
     if task is None:
-        raise HTTPException(status_code=404, detail="Tarefa não encontrada")
+        async def not_found_generator() -> AsyncGenerator[str, None]:
+            payload = json.dumps(
+                {
+                    "id": task_id,
+                    "status": "error",
+                    "progress": 0.0,
+                    "message": "Tarefa não encontrada ou expirada no servidor",
+                    "error": "Tarefa não encontrada ou expirada no servidor",
+                },
+                ensure_ascii=False,
+            )
+            yield f"data: {payload}\n\n"
+
+        return StreamingResponse(
+            not_found_generator(),
+            media_type="text/event-stream",
+            headers={
+                "Cache-Control": "no-cache",
+                "Connection": "close",
+                "X-Accel-Buffering": "no",
+            },
+        )
 
     async def event_generator() -> AsyncGenerator[str, None]:
         async for event in task_manager.subscribe(task_id):
